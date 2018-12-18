@@ -88,36 +88,37 @@ public class NodalAnalysis {
 		
 		/* look for multi-node parallel resistors */	
 		/* CURRENTLY UNDER CONSTRUCTION - ADDING FUNCTIONALITY TO ALLOW MULTI-NODE PARALLEL RESISTORS */
-		for (Node node1:nodeList) {
-			/* find components connected to each other node */
-			for (Node node2:nodeList) {
-				/* components cannot have the same node on both sides, and in the simplified circuit only one component is connected between each node */
-				if (node1!=node2 && node1.getId()<node2.getId() && node1.getId()!=node2.getId()+1) { 
-					/* for each component */
-					for (int k = 0;k<simplifiedCircuit.size()-1;k++) {
-						/* test it against each other component */
-						for (int p = 0; p<simplifiedCircuit.size()-1;p++) {
-							/* if not the same component and both resistors */
-							if(k!=p && simplifiedCircuit.get(k) instanceof Resistor && simplifiedCircuit.get(p) instanceof Resistor) {
-								/* if any components share a first node but not a second node */
-								if(simplifiedCircuit.get(k).testNode(simplifiedCircuit.get(p))) {
-									this.multiNodeResistors(node1,node2);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		//for (Node node1:nodeList) {
+		//	/* find components connected to each other node */
+		//	for (Node node2:nodeList) {
+		//		/* components cannot have the same node on both sides, and in the simplified circuit only one component is connected between each node */
+		//		if (node1!=node2 && node1.getId()<node2.getId() && node1.getId()!=node2.getId()+1) { 
+		//			/* for each component */
+		//			for (int k = 0;k<simplifiedCircuit.size()-1;k++) {
+		//				/* test it against each other component */
+		//				for (int p = 0; p<simplifiedCircuit.size()-1;p++) {
+		//					/* if not the same component and both resistors */
+		//					if(k!=p && simplifiedCircuit.get(k) instanceof Resistor && simplifiedCircuit.get(p) instanceof Resistor) {
+		//						/* if any components share a first node but not a second node */
+		//						if(simplifiedCircuit.get(k).testNode(simplifiedCircuit.get(p))) {
+		//							this.multiNodeResistors(node1,node2);
+		//						}
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
 		
 		/* analyze simplified circuit */
 		totalR = this.seriesResistor(simplifiedCircuit);
 		System.out.println("Total resistance in circuit is: "+this.totalR+" Ohms.");
 		System.out.println("Total current is: "+this.totalV/this.totalR+" Amps.");
 		
-		for (int x = 0;x<simplifiedCircuit.size();x++) {
-			System.out.println("Connections" + this.simplifiedCircuit.get(x).getNode1().getConnections());
-		}
+		/* part of testing for parallel resistors */
+		//for (int x = 0;x<simplifiedCircuit.size();x++) {
+		//	System.out.println("Connections" + this.simplifiedCircuit.get(x).getNode1().getConnections());
+		//}
 						
 	}
 	protected void analyzeSpecifics() {
@@ -146,6 +147,7 @@ public class NodalAnalysis {
 	}
 	
 	/* recursive method for adding up multi-node parallel resistors */
+	/* UNDER CONSTRUCTION */
 	protected void multiNodeResistors(Node nodal1, Node nodal2) {
 		/* have to test if further parallel resistors exist downstream */
 		for (Node node1:nodeList) {
