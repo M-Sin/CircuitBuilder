@@ -2,8 +2,10 @@ package circuit;
 import java.util.ArrayList;
 
 /** A helper class to simplify UserMain code.
+ * 
  * Evaluates whether nodes exist already as a component is added, and if not creates them within UserMain's nodeList ArrayList.
- * Again, duplicates resources as the cost of simplifying UserMain.
+ * 
+ * Decided to compartmentalize this portion of the program to remove large duplicate code blocks and simplify UserMain.
  * 
  * @author Michael Sinclair.
  * @version 0.1.

@@ -1,19 +1,8 @@
 package circuit;
 import java.util.ArrayList;
 
-/** Assistant class to calculate current through resistors or voltage between nodes, that takes a ground reference and the components in the circuit.
- * Input requires reference ground node, components in the circuit, and the two nodes between which the analysis takes place.
- * 
- * This program will make the following assumptions:
- * Voltages will not be connected in parallel, only in series (which means there is a node between them).
- * 
- * Currents will be calculated clockwise.
- * 
- * I decided to compartmentalize this part of the program in a separate class to simplify the coding and maintenance.
- * If resources were a concern however, I likely would not do so as it duplicates a lot of memory locations.
- * 
- * Compartmentalizing this will also let me copy data out of UserMain rather than directly operate on it, which will allow the calculation function not need to end the program
- * and instead provide a snapshot of current circuit characteristics, then allow more components to be added.
+/** 
+ * This class is no longer used and will soon be deleted. It was replaced by CircuitAnalysis when methodology for tracking parallel resistors changed.
  * 
  * @author Michael Sinclair.
  * @version 0.1.
@@ -110,6 +99,8 @@ public class NodalAnalysis {
 		//	}
 		//}
 		
+		
+		
 		/* analyze simplified circuit */
 		totalR = this.seriesResistor(simplifiedCircuit);
 		System.out.println("Total resistance in circuit is: "+this.totalR+" Ohms.");
@@ -119,6 +110,8 @@ public class NodalAnalysis {
 		//for (int x = 0;x<simplifiedCircuit.size();x++) {
 		//	System.out.println("Connections" + this.simplifiedCircuit.get(x).getNode1().getConnections());
 		//}
+		
+		
 						
 	}
 	protected void analyzeSpecifics() {
@@ -227,8 +220,6 @@ public class NodalAnalysis {
 			if(res.getClass()==Resistor.class) {
 				parallelR+=1/(((Resistor)res).getR());
 				/* disconnect resistor from nodes */
-				res.getNode2().disconnect();
-				res.getNode1().disconnect();
 			}
 		}
 		return 1/parallelR;

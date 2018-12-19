@@ -2,6 +2,10 @@ package circuit;
 /**
  * A resistor class with resistance that is connected to two different nodes.
  * 
+ * It contains a resistance value, a current through the resistor (to be added) which will correspond to voltage drop across the resistor.
+ * 
+ * It also contains an inherited Id as well as two connected nodes from the Component class.
+ * 
  * 
  *@author Michael Sinclair.
 * @version 0.1.

@@ -1,12 +1,10 @@
 package circuit;
+import java.util.ArrayList;
 
 /**
 * A node class, to connect circuit components.
-* Contains an id that describes the node, as well as the voltage at the node, 
-* the current leaving the node (clockwise) and the resistance to the 'right' (again, clockwise)
-* of the node. Note that if a voltage source is to the 'right' the resistance will be 0.0.
 * 
-* It currently supports linear circuits with components placed sequentially.
+* Contains an id that describes the node, as well as the voltage at the node (to be added), the current leaving the node (to be added) and an array list of components attached to the node.
 * 
 * @author Michael Sinclair.
 * @version 0.1.
@@ -15,21 +13,18 @@ package circuit;
 
 public class Node {
 	/*Instance variables*/
-	/* exploring possibility of what tracking this information at the nodes can do */
     private int id;
     private double voltageAt;
+    private ArrayList<Component> attachments;
     private double currentLeaving;
-    private double ResRight;
-    private int connections;
     
     /**Assign an id to this node.
      * @param nodal_id.*/
     protected Node(int nodalId) {
         this.id = nodalId;
         this.voltageAt = 0.0;
+        this.attachments = new ArrayList<>();
         this.currentLeaving = 0.0;
-        this.ResRight = 0.0;
-        this.connections = 0;
     }
     
     /*Methods*/
@@ -39,7 +34,7 @@ public class Node {
     	return this.id;
     }
    
-    /* set/get voltage */
+    /* set/get voltage at Node */
     protected void setVoltage(double volts) {
     	this.voltageAt = volts;
     }
@@ -48,35 +43,26 @@ public class Node {
     	return this.voltageAt;
     }
     
-    /* set/get current_right */
-    protected void setCurrentRight(double cur) {
-    	this.currentLeaving = cur;
+    /* set/get voltage current leaving Node */
+    protected void setCurrent(double current) {
+    	this.currentLeaving = current;
     }
     
-    protected double getCurrentRight() {
+    protected double getCurrent() {
     	return this.currentLeaving;
     }
     
-    /* set/get resistance_right */
-    protected void setResistanceRight(double res) {
-    	this.ResRight = res;
-    }
-    
-    protected double getResistanceRight() {
-    	return this.ResRight;
-    }
-    
     /* set/get connections, methods for tracking component connections */
-    protected void connect() {
-    	this.connections++;
+    protected void attach(Component component) {
+    	this.attachments.add(component);
     }
     
-    protected void disconnect() {
-    	this.connections--;
+    protected void remove(Component component) {
+    	this.attachments.remove(component);
     }
     
-    protected int getConnections() {
-    	return this.connections;
+    protected ArrayList<Component> getAttachments(){
+    	return this.attachments;
     }
     
     
@@ -88,6 +74,14 @@ public class Node {
     }
     
     public String toStringSpecific() {
-    	return "Node"+this.id+" CL "+this.currentLeaving+" RR "+this.ResRight+" V@" + this.voltageAt;
+    	return "Node"+this.id+" Current Leaving: "+this.currentLeaving+" Amps and Voltage at node:" + this.voltageAt+" Volts.";
+    }
+    
+    public String toStringAttachments() {
+    	String str = "Node"+this.id;
+    	for(int i=0;i<attachments.size();i++) {
+    		str+=" "+attachments.get(i).toString();
+    	}
+    	return str;
     }
 }

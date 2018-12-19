@@ -1,10 +1,10 @@
 package circuit;
-
 /**
- * A voltage source class that is connected to two different nodes, where, unlike
- * the resistor class, polarity is important and defined in the direction of 
- * smaller node number to larger. 
+ * A voltage source class that supplies voltage to the circuit and that is connected to two different nodes.
  * 
+ * It contains a voltage value.
+ * 
+ *  It also contains an inherited Id as well as two connected nodes from the Component class.
  * 
  * @author Michael Sinclair.
  * @version 0.1.

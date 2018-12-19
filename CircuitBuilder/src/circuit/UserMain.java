@@ -4,9 +4,7 @@ import java.util.Collections;
 import java.util.Scanner;
   
 /**
- * Main function that creates a circuit, and takes input from user to add 
- * resistors or voltage sources to the circuit, and display components within 
- * the circuit.
+ * Main function that creates a circuit, and takes input from user to add resistors or voltage sources to the circuit, and display components within the circuit.
  * 
  * Plan to add functionality later to allow parallel resistors across any node. Currently the program only handles parallel resistors across the same node.
  * 
@@ -17,6 +15,8 @@ import java.util.Scanner;
  * Plan to add functionality that will calculate voltages at each node and current leaving each node.
  * 
  * Plan to add functionality that will allow calculate to to provide circuit characteristics, then allow the user to add more components if desired rather than end the program.
+ * 
+ * Plan to add try/catch blocks to correct errors during runtime.
  * 
  * @author Michael Sinclair.
  * @version 0.1.
@@ -104,8 +104,9 @@ public class UserMain {
 	                /*Create add resistor to circuit.*/
 	                Resistor res = new Resistor(rVal,nodeList.get(index1),nodeList.get(index2));
 	                cir.addComponent(res);
-	                nodeList.get(index1).connect();
-	                nodeList.get(index2).connect();
+	                /* track connections through nodes */
+	                nodeList.get(index1).attach(res);
+	                nodeList.get(index2).attach(res);
 	                
 	                System.out.println("Added Resistor: "+res.toString());
 	                
@@ -132,8 +133,9 @@ public class UserMain {
 	                /*Create and add voltage source to circuit.*/
 	                Voltage vol = new Voltage(vVal,nodeList.get(index1),nodeList.get(index2));
 	                cir.addComponent(vol);
-	                nodeList.get(index1).connect();
-	                nodeList.get(index2).connect();
+	                /* track connections through nodes */
+	                nodeList.get(index1).attach(vol);
+	                nodeList.get(index2).attach(vol);
 	                
 	                System.out.println("Voltage added: "+vol.toString());
 	                
@@ -164,9 +166,9 @@ public class UserMain {
                 			Check = (Resistor)cir.getComponents().get(i);
                 			if (Check.getId() == Integer.parseInt(Number)){
                 				/* if it is a resistor and in the list, remove it */
+                				cir.getComponents().get(i).getNode1().remove(cir.getComponents().get(i));
+                				cir.getComponents().get(i).getNode2().remove(cir.getComponents().get(i));
                 				cir.getComponents().remove(i);
-                				cir.getComponents().get(i).getNode1().disconnect();
-                				cir.getComponents().get(i).getNode2().disconnect();
                 				System.out.println("Removed component.");
                 				flag = true;
                 				break;
@@ -189,9 +191,9 @@ public class UserMain {
                 			Check = (Voltage)cir.getComponents().get(i);
                 			if (Check.getId() == Integer.parseInt(Number)){
                 				/* if it is a voltage and in the list, remove it */
+                				cir.getComponents().get(i).getNode1().remove(cir.getComponents().get(i));
+                				cir.getComponents().get(i).getNode2().remove(cir.getComponents().get(i));
                 				cir.getComponents().remove(i);
-                				cir.getComponents().get(i).getNode1().disconnect();
-                				cir.getComponents().get(i).getNode2().disconnect();
                 				System.out.println("Removed component.");
                 				flag = true;
                 				break;
@@ -247,14 +249,15 @@ public class UserMain {
 	            	System.out.println(cir.toString());
 	            	System.out.println("");
 	            	
-	            	NodalAnalysis Calculate = new NodalAnalysis(Integer.parseInt(input), cir.getComponents(), nodeList);
+	            	CircuitAnalysis Calculate = new CircuitAnalysis(Integer.parseInt(input), cir.getComponents(), nodeList);
 	            	Calculate.analyzeCircuit();
-	            	Calculate.analyzeSpecifics();
 	            	
-	            	/* this is part of functionality I plan to build into this program that will allow the program to calculate the voltage at each node. */
-	            	//for (int i = 0; i<nodeList.size();i++){
-	            	//	System.out.println(""+nodeList.get(i).toStringSpecific());
-	            	//}
+	            	/* test circuit after analysis */
+	            	//System.out.println("");
+            		//System.out.println("Components in circuit after analysis are:");
+	            	//System.out.println(cir.toString());
+	            	//System.out.println("");
+	            	
 	            	System.out.println("");
 	            	break;
             	}

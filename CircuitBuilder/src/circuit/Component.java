@@ -3,6 +3,8 @@ package circuit;
 /**
  * An abstract class to quantify common elements to components within the circuit. 
  * 
+ * Mainly handles component Id features.
+ * 
  * @author Michael Sinclair.
  * @version 0.1.
  * @since 18 December 2018.
