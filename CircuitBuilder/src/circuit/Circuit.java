@@ -8,7 +8,6 @@ import java.util.ArrayList;
 * 
 * It holds the ArrayList of components in the circuit.
 * 
-* V1.11
 * 
 * @author Michael Sinclair.
 * @version 0.1.

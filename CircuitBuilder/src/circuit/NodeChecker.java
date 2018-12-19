@@ -7,7 +7,6 @@ import java.util.ArrayList;
  * 
  * Decided to compartmentalize this portion of the program to remove large duplicate code blocks and simplify UserMain.
  * 
- * V1.11
  * 
  * @author Michael Sinclair.
  * @version 0.1.

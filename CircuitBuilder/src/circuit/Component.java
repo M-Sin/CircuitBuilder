@@ -5,7 +5,6 @@ package circuit;
  * 
  * Mainly handles component Id features.
  * 
- * V1.11
  * 
  * @author Michael Sinclair.
  * @version 0.1.

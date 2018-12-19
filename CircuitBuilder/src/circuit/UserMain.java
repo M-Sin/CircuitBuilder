@@ -18,7 +18,7 @@ import java.util.Scanner;
  * 
  * Plan to add try/catch blocks to correct errors during runtime.
  * 
- * V1.11
+ * V1.12
  * 
  * @author Michael Sinclair.
  * @version 0.1.
@@ -63,15 +63,16 @@ public class UserMain {
         System.out.println("X is an integer indicating the first node attached to component.");
         System.out.println("Y is an integer indicating the second node attached to component.");
         System.out.println("Z a double indicating the resistance in Ohms or Voltage in volts."); 
+        System.out.println("For example: R 1 2 10 will add a resistor connected to nodes 1 and 2 with a resistance of 10 Ohms.");
         System.out.println("");
         System.out.println("Rules:");
         System.out.println("Voltage/Resistor values must be non-zero and Resistor values must also be non-negative.");
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V1.11");
+        System.out.println("V1.12");
         System.out.println("Currently the program only supports purely serial voltage sources.");
-        System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes.");
+        System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes and voltages must be placed directly in series with each other only.");
         System.out.println("The program currently does not support parallel resistors between multiple nodes, only multiple resistors across the same two nodes.");
         
         /*Request user input.*/

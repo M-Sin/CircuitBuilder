@@ -11,7 +11,6 @@ import java.util.ArrayList;
  * 
  * I decided to compartmentalize this part of the program in a separate class to simplify the coding and maintenance.
  * 
- * V1.11
  * 
  * @author Michael Sinclair.
  * @version 0.1.
@@ -37,34 +36,46 @@ public class CircuitAnalysis {
 	
 	/* methods */
 	
+	/* automate circuit measurements */
 	protected void analyzeCircuit() {
 		this.analyzeVoltage();
 		this.analyzeResistance();
 		this.printCharacteristics();
 	}
 
-	/* node analysis */
+	/* find total voltage */
 	protected void analyzeVoltage() {
-		/* find total voltage */
+		/* note that this program can currently only handle directly serial voltage (connected in series to each other) */
+		/* for each component */
 		for (int i = 0; i<components.size();i++) {
+			/* if it is a voltage */
 			if (components.get(i).getClass() == Voltage.class) {
+				/* get the voltage */
 				this.totalV+=((Voltage)(components.get(i))).getV();
 			}
 		}
 	}
 	
+	/* find resistance */
 	protected void analyzeResistance() {
-		this.analyzeParallel();
+		/* combine parallel resistors between the same two nodes into one equivalent resistor */
+		this.analyzeParallelSameNode();
 		
-		/* now that all resistors are serial resistors */
+		/* while parallel resistors still exist, combine them */
+		// to do
+		
+		/* now that all resistors are serial resistors, for each component */
 		for (int i = 0; i<components.size();i++) {
+			/* if it is a resistor */
 			if (components.get(i) instanceof Resistor) {
+				/* get the resistance and sum them all together */
 				this.totalR+=((Resistor)components.get(i)).getR();
 			}
 		}
 	}
 	
-	protected void analyzeParallel() {
+	/* reduce parallel resistors to a single equivalent resistor */
+	protected void analyzeParallelSameNode() {
 		/* starting with all resistors connected between the same two nodes */
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> removal = new ArrayList<>();
@@ -124,6 +135,7 @@ public class CircuitAnalysis {
 		return 1/parallelR;
 	}
 	
+	/* print circuit Characteristics */
 	protected void printCharacteristics() {
 		System.out.println("Ground voltage is located at Node "+this.ground+".");
 		System.out.println("Total voltage in circuit is: "+this.totalV+ " Volts.");
