@@ -4,6 +4,8 @@ import java.util.ArrayList;
 /** 
  * This class is no longer used and will soon be deleted. It was replaced by CircuitAnalysis when methodology for tracking parallel resistors changed.
  * 
+ * Changed methodology for tracking parallel resistors.
+ * 
  * @author Michael Sinclair.
  * @version 0.1.
  * @since 18 December 2018.
