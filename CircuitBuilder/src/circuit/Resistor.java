@@ -6,6 +6,8 @@ package circuit;
  * 
  * It also contains an inherited Id as well as two connected nodes from the Component class.
  * 
+ * V1.11
+ * 
  * 
  *@author Michael Sinclair.
 * @version 0.1.

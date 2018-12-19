@@ -6,6 +6,8 @@ import java.util.ArrayList;
 * 
 * Contains an id that describes the node, as well as the voltage at the node (to be added), the current leaving the node (to be added) and an array list of components attached to the node.
 * 
+* V1.11
+* 
 * @author Michael Sinclair.
 * @version 0.1.
 * @since 18 December 2018.

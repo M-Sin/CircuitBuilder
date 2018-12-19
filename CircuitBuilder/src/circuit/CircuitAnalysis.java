@@ -11,6 +11,8 @@ import java.util.ArrayList;
  * 
  * I decided to compartmentalize this part of the program in a separate class to simplify the coding and maintenance.
  * 
+ * V1.11
+ * 
  * @author Michael Sinclair.
  * @version 0.1.
  * @since 18 December 2018.
@@ -52,6 +54,17 @@ public class CircuitAnalysis {
 	}
 	
 	protected void analyzeResistance() {
+		this.analyzeParallel();
+		
+		/* now that all resistors are serial resistors */
+		for (int i = 0; i<components.size();i++) {
+			if (components.get(i) instanceof Resistor) {
+				this.totalR+=((Resistor)components.get(i)).getR();
+			}
+		}
+	}
+	
+	protected void analyzeParallel() {
 		/* starting with all resistors connected between the same two nodes */
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> removal = new ArrayList<>();
@@ -87,18 +100,11 @@ public class CircuitAnalysis {
 					}
 				}
 			}
-		
+		/* remove resistors to be replaced by single equivalent resistor */
 		for (int i = 0; i<removal.size();i++) {
 			if(components.contains(removal.get(i))){
 				components.remove(removal.get(i));
 				System.out.println("Removed "+removal.get(i).toString());
-			}
-		}
-		
-		/* now that all resistors are serial resistors */
-		for (int i = 0; i<components.size();i++) {
-			if (components.get(i) instanceof Resistor) {
-				this.totalR+=((Resistor)components.get(i)).getR();
 			}
 		}
 	}
