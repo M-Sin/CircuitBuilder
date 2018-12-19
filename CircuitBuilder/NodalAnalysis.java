@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * 
  * Changed methodology for tracking parallel resistors.
  * 
+ * 
  * @author Michael Sinclair.
  * @version 0.1.
  * @since 18 December 2018.
