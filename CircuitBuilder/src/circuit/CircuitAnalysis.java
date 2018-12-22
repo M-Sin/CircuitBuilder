@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * 
  * @author Michael Sinclair.
  * @version 0.1.
- * @since 21 December 2018.
+ * @since 22 December 2018.
 * */
 
 public class CircuitAnalysis {
@@ -45,7 +45,9 @@ public class CircuitAnalysis {
 		/* find total resistance of the circuit */
 		this.analyzeResistance();
 		/* print out equivalent components */
+		System.out.print("Final circuit contains:");
 		System.out.println(components.toString());
+		System.out.println("");
 		/* print out calculated circuit characteristics */
 		this.printCharacteristics();
 	}
@@ -70,10 +72,16 @@ public class CircuitAnalysis {
 		this.analyzeParallelSameNode();
 		
 		/* test print */
-		System.out.println("Circuit contains "+components.size());
+		//System.out.println("Circuit contains "+components.size()+" components.");
+		//for(Node node:nodeList) {
+		//	System.out.println(node.toStringAttachments());
+		//}
+		//System.out.print("");
 		
 		/* combine serial and multi-node parallel resistors until only 1 mega-equivalent resistor remains */
-		//to do
+		//while() {
+		//	
+		//}
 		
 		/* now that all resistors are serial resistors, for each component */
 		for (int i = 0; i<components.size();i++) {
@@ -87,7 +95,6 @@ public class CircuitAnalysis {
 	
 	/* reduce parallel resistors to a single equivalent resistor */
 	protected void analyzeParallelSameNode() {
-		/* starting with all resistors connected between the same two nodes */
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> toRemove = new ArrayList<>();
 		ArrayList<Component> toConnect = new ArrayList<>();
@@ -106,15 +113,12 @@ public class CircuitAnalysis {
 									if(components.get(k).getNode1().getId() == n && components.get(k).getNode2().getId() == m) {
 										/* add it to temporary list */
 										temp.add(components.get(k));
-										System.out.println("Temp stored: "+components.get(k).toString());
 									}
 								}
 							}
 						}
 						/* if a parallel connection was found between node n and m*/
 						if(temp.size()>1) {
-							/* test print */
-							System.out.println("Node1 "+n+" Node2 "+m);
 							/* create equivalent parallel resistor */
 							Resistor equivalent = new Resistor(this.parallelResistors(temp),this.findNode(n),this.findNode(m));
 							/* queue it for connection */
@@ -124,12 +128,8 @@ public class CircuitAnalysis {
 								toRemove.add(remove);
 							}
 							temp.clear();
-							/* test print */
-							System.out.println("Temp cleared.");
 						}
 						temp.clear();
-						/* test print */
-						System.out.println("Temp cleared.");
 					}
 				}
 			}
@@ -145,8 +145,6 @@ public class CircuitAnalysis {
 						/* remove it from components */
 						remove.getNode1().disconnect(remove);
 						remove.getNode2().disconnect(remove);
-						/* test print */
-						System.out.println("Removed "+components.get(i).toString());
 						components.remove(i);
 						/* need to consider that components has shrunk by 1 */
 						i--;
@@ -169,7 +167,34 @@ public class CircuitAnalysis {
 	
 	/* UNDER CONSTRUCTION */
 	protected void analyzeSerialResistances() {
-
+		ArrayList<Component> temp = new ArrayList<>();
+		ArrayList<Component> toRemove = new ArrayList<>();
+		ArrayList<Component> toConnect = new ArrayList<>();
+		/* for each node */
+		for(Node node1:nodeList) {
+			/* compare to other nodes */
+			for(Node node2:nodeList) {
+				/* if not the same node */
+				if(node1.getId()!=node2.getId()) {
+					/* if both nodes only have 2 attachments */
+					if(node1.getAttachments().size()==2 && node2.getAttachments().size()==2) {
+						/* iterate through the attachments that are resistors */
+						for(Component attached1:node1.getAttachments()) {
+							for(Component attached2:node2.getAttachments()) {
+								if (attached1.getNode2().getId()==attached2.getNode1().getId() && attached1 instanceof Resistor && attached2 instanceof Resistor) {
+									/* if a common resistor is found between the nodes and both nodes only have 2 attachments, then the common resistor must be in series with the second nodes attached item */
+									/* two possibilities exist, either the shared resistor is both in the 0th location of both attachment ArrayLists or in opposite (0/1 or 1/0) locations */
+									if(node1.getAttachments().get(0).getId()==node2.getAttachments().get(0).getId() && node1.getAttachments().get(0) instanceof Resistor && node2.getAttachments().get(0) instanceof Resistor) {
+										temp.add(node1.getAttachments().get(0));
+										temp.add(node2.getAttachments().get(1));
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	/* Find ArrayList index */
@@ -184,7 +209,7 @@ public class CircuitAnalysis {
 		return i;
 	}
 	
-	/* find node based on id */
+	/* Find node based on id */
 	protected Node findNode(int id) {
 		/* value to store index */
 		int i  = 0;
@@ -219,7 +244,7 @@ public class CircuitAnalysis {
 		return 1/parallelR;
 	}
 	
-	/* print circuit Characteristics */
+	/* Print circuit Characteristics */
 	protected void printCharacteristics() {
 		System.out.println("Ground voltage is located at Node "+this.ground+".");
 		System.out.println("Total voltage in circuit is: "+this.totalV+ " Volts.");

@@ -9,7 +9,7 @@ package circuit;
  * 
  * @author Michael Sinclair.
  * @version 0.1.
- * @since 18 December 2018.
+ * @since 22 December 2018.
 */
 
 public class Voltage extends Component{
