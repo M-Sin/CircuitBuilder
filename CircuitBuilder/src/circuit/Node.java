@@ -54,11 +54,11 @@ public class Node {
     }
     
     /* set/get connections, methods for tracking component connections */
-    protected void attach(Component component) {
+    protected void connect(Component component) {
     	this.attachments.add(component);
     }
     
-    protected void remove(Component component) {
+    protected void disconnect(Component component) {
     	this.attachments.remove(component);
     }
     

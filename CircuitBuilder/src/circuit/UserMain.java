@@ -18,7 +18,7 @@ import java.util.Scanner;
  * 
  * Plan to add try/catch blocks to correct errors during runtime.
  * 
- * V1.12
+ * V1.13
  * 
  * @author Michael Sinclair.
  * @version 0.1.
@@ -70,7 +70,7 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V1.12");
+        System.out.println("V1.13");
         System.out.println("Currently the program only supports purely serial voltage sources.");
         System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes and voltages must be placed directly in series with each other only.");
         System.out.println("The program currently does not support parallel resistors between multiple nodes, only multiple resistors across the same two nodes.");
@@ -108,8 +108,8 @@ public class UserMain {
 	                Resistor res = new Resistor(rVal,nodeList.get(index1),nodeList.get(index2));
 	                cir.addComponent(res);
 	                /* track connections through nodes */
-	                nodeList.get(index1).attach(res);
-	                nodeList.get(index2).attach(res);
+	                nodeList.get(index1).connect(res);
+	                nodeList.get(index2).connect(res);
 	                
 	                System.out.println("Added Resistor: "+res.toString());
 	                
@@ -137,8 +137,8 @@ public class UserMain {
 	                Voltage vol = new Voltage(vVal,nodeList.get(index1),nodeList.get(index2));
 	                cir.addComponent(vol);
 	                /* track connections through nodes */
-	                nodeList.get(index1).attach(vol);
-	                nodeList.get(index2).attach(vol);
+	                nodeList.get(index1).connect(vol);
+	                nodeList.get(index2).connect(vol);
 	                
 	                System.out.println("Voltage added: "+vol.toString());
 	                
@@ -169,8 +169,8 @@ public class UserMain {
                 			Check = (Resistor)cir.getComponents().get(i);
                 			if (Check.getId() == Integer.parseInt(Number)){
                 				/* if it is a resistor and in the list, remove it */
-                				cir.getComponents().get(i).getNode1().remove(cir.getComponents().get(i));
-                				cir.getComponents().get(i).getNode2().remove(cir.getComponents().get(i));
+                				cir.getComponents().get(i).getNode1().disconnect(cir.getComponents().get(i));
+                				cir.getComponents().get(i).getNode2().disconnect(cir.getComponents().get(i));
                 				cir.getComponents().remove(i);
                 				System.out.println("Removed component.");
                 				flag = true;
@@ -194,8 +194,8 @@ public class UserMain {
                 			Check = (Voltage)cir.getComponents().get(i);
                 			if (Check.getId() == Integer.parseInt(Number)){
                 				/* if it is a voltage and in the list, remove it */
-                				cir.getComponents().get(i).getNode1().remove(cir.getComponents().get(i));
-                				cir.getComponents().get(i).getNode2().remove(cir.getComponents().get(i));
+                				cir.getComponents().get(i).getNode1().disconnect(cir.getComponents().get(i));
+                				cir.getComponents().get(i).getNode2().disconnect(cir.getComponents().get(i));
                 				cir.getComponents().remove(i);
                 				System.out.println("Removed component.");
                 				flag = true;
