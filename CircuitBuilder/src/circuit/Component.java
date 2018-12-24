@@ -8,7 +8,7 @@ package circuit;
  * 
  * @author Michael Sinclair.
  * @version 0.1.
- * @since 22 December 2018.
+ * @since 23 December 2018.
 */
 
 public abstract class Component {

@@ -18,11 +18,11 @@ import java.util.Scanner;
  * 
  * Plan to add try/catch blocks to correct errors during runtime.
  * 
- * V1.141
+ * V1.142
  * 
  * @author Michael Sinclair.
  * @version 0.1.
- * @since 22 December 2018.
+ * @since 23 December 2018.
 */
 
 public class UserMain {
@@ -70,8 +70,8 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V1.141");
-        System.out.println("Currently the program only supports purely serial voltage sources.");
+        System.out.println("V1.142");
+        System.out.println("Currently the program only supports purely directly serial voltage sources.");
         System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes and voltages must be placed directly in series with each other only.");
         System.out.println("The program currently does not support parallel resistors between multiple nodes, only multiple resistors across the same two nodes.");
         
