@@ -73,11 +73,16 @@ public class CircuitAnalysis {
 		
 		/* combine serial and multi-node parallel resistors until only 1 mega-equivalent resistor remains */
 		// UNDER CONSTRUCTION
+		int testParameter = 0;
 		while(components.size()>this.VoltageSources+1) {
+			if(testParameter>5) {
+				break;
+			}
 			for(Component component:components){
 				System.out.println("Components "+component.toString());
 			}
 			this.analyzeSerialResistances();
+			testParameter++;
 		}
 		
 		/* now that all resistors are serial resistors, for each component */
@@ -167,6 +172,7 @@ public class CircuitAnalysis {
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> toRemove = new ArrayList<>();
 		ArrayList<Component> toConnect = new ArrayList<>();
+		int nodalCase = 0;
 		/* for each node */
 		for(Node node1:nodeList) {
 			/* compare to other nodes */
@@ -176,83 +182,72 @@ public class CircuitAnalysis {
 					/* if both nodes only have 2 attachments */
 					if(node1.getAttachments().size()==2 && node2.getAttachments().size()==2) {
 						/* iterate through the attachments that are resistors */
-						for(Component attached1:node1.getAttachments()) {
-							for(Component attached2:node2.getAttachments()) {
-								/* if a common resistor is found between the nodes and both nodes only have 2 attachments, then the common resistor must be in series with the second nodes attached item */
-								if (attached1.getId()==attached2.getId() && attached1 instanceof Resistor && attached2 instanceof Resistor) {
-									/* three possibilities exist, either the shared resistor is both in the 0th location of both attachment ArrayLists or in opposite (0/1 or 1/0) locations */
-									if(node1.getAttachments().get(0).getId()==node2.getAttachments().get(0).getId() && node1.getAttachments().get(0) instanceof Resistor && node2.getAttachments().get(0) instanceof Resistor) {
-										temp.add(node1.getAttachments().get(0));
-										temp.add(node2.getAttachments().get(1));
-										System.out.println("temp add "+node1.getAttachments().get(0));
-										System.out.println("temp add "+node2.getAttachments().get(1));
-									}
-									else if(node1.getAttachments().get(0).getId()==node2.getAttachments().get(1).getId() && node1.getAttachments().get(0) instanceof Resistor && node2.getAttachments().get(1) instanceof Resistor) {
-										temp.add(node1.getAttachments().get(0));
-										temp.add(node2.getAttachments().get(1));
-										System.out.println("temp add "+node1.getAttachments().get(0));
-										System.out.println("temp add "+node2.getAttachments().get(1));
-									}
-									else if(node1.getAttachments().get(0) instanceof Resistor && node2.getAttachments().get(1) instanceof Resistor) {
-										temp.add(node1.getAttachments().get(1));
-										temp.add(node2.getAttachments().get(0));
-										System.out.println("temp add "+node1.getAttachments().get(1));
-										System.out.println("temp add "+node2.getAttachments().get(0));
+						for(int i = 0; i<2; i++) {
+							for(int j = 0; j<2; j++) {
+								/* if the components are not already queued for removal */
+								if(!toRemove.contains(node1.getAttachments().get(i))) {
+									/* if a common resistor is found between the nodes and both nodes only have 2 attachments, then the common resistor must be in series with the second nodes attached item */
+									if (node1.getAttachments().get(i).getId()==node2.getAttachments().get(j).getId() && node1.getAttachments().get(i) instanceof Resistor) {
+										System.out.println(node1.getAttachments().get(i));
+										System.out.println(node2.getAttachments().get(j));
+										System.out.println(node2.getAttachments().get((j+1)%2));
+										/* if the second node's other attached item is also a resistor */
+										if(node2.getAttachments().get((j+1)%2) instanceof Resistor) {
+											/* queue them for equivalence calculation */
+											temp.add(node1.getAttachments().get(i));
+											temp.add(node2.getAttachments().get((j+1)%2));
+											/* find the common node */
+											if(temp.get(0).getNode1().getId() == temp.get(1).getNode1().getId()) {
+												/* queue equivalent resistor nodes to be the non-common nodes */
+												nodalCase = 1;
+											}
+											else if(temp.get(0).getNode1().getId() == temp.get(1).getNode2().getId()) {
+												/* queue equivalent resistor nodes to be the non-common nodes */
+												nodalCase = 2;
+											}
+											else if(temp.get(0).getNode2().getId() == temp.get(1).getNode1().getId()) {
+												/* queue equivalent resistor nodes to be the non-common nodes */
+												nodalCase = 3;
+											}
+											/* note chose to not use just plain else to verify the last condition is true, even though it is the only possible combination of common nodes left */
+											else if(temp.get(0).getNode2().getId() == temp.get(1).getNode2().getId()) {
+												nodalCase = 4;
+											}
+										}
+										System.out.println(nodalCase);
 									}
 								}
 							}
 						}
 						/* if series resistors were found */
 						if(temp.size()==2) {
-							System.out.println(temp.toString());
-							boolean zeroNode1 = false;
-							boolean zeroNode2 = false;
 							/* queue resistors for removal */
 							toRemove.add(temp.get(0));
 							toRemove.add(temp.get(1));
-							/* test if either node is connected to the 0th node */
-							if (temp.get(0).getNode1().getId() == 0) {
-								zeroNode1 = true;
+							Resistor equivalent = null;
+							/* queue equivalent resistor to be added */
+							if(nodalCase == 1) {
+								/* first nodal case - shared 1st/1st node so connect equivalent resistor between both 2nd nodes */
+								equivalent = new Resistor(((Resistor)temp.get(0)).getR()+((Resistor)temp.get(1)).getR(),temp.get(0).getNode2(),temp.get(1).getNode2());
 							}
-							if (temp.get(1).getNode1().getId() == 0) {
-								zeroNode2 = true;
+							else if(nodalCase == 2) {
+								/* second nodal case - shared 1st/2nd node so connect equivalent resistor between 2nd/1st nodes */
+								equivalent = new Resistor(((Resistor)temp.get(0)).getR()+((Resistor)temp.get(1)).getR(),temp.get(0).getNode2(),temp.get(1).getNode1());
 							}
-							System.out.println(zeroNode1);
-							System.out.println(zeroNode2);
-							/* if not, proceed normally */
-							if(!zeroNode1 && !zeroNode2) {
-								/* queue equivalent resistor to be added */
-								Resistor equivalent = new Resistor(((Resistor)temp.get(0)).getR()+((Resistor)temp.get(1)).getR(),temp.get(0).getNode1(),temp.get(1).getNode2());
-								toConnect.add(equivalent);
-								temp.clear();
-								System.out.println(1);
+							else if(nodalCase == 3) {
+								/* third nodal case - shared 2nd/1st node so connect equivalent resistor between 1st/2nd nodes */
+								equivalent = new Resistor(((Resistor)temp.get(0)).getR()+((Resistor)temp.get(1)).getR(),temp.get(0).getNode1(),temp.get(1).getNode2());
 							}
-							/* else if the second component has its first node at 0, but is also not connected to node 1 (as that is following normal convention of looking forwards) */
-							else if(!zeroNode1 && zeroNode2 && temp.get(1).getNode2().getId()!=1) {
-								/* queue equivalent resistor to be added */
-								Resistor equivalent = new Resistor(((Resistor)temp.get(0)).getR()+((Resistor)temp.get(1)).getR(),temp.get(0).getNode1(),temp.get(1).getNode2());
-								toConnect.add(equivalent);
-								temp.clear();
-								System.out.println(2);
+							/* chose not to use simple else for reason stated above */
+							else if(nodalCase == 4) {
+								/* last nodal case - shared 2nd/2nd node so connect equivalent resistor between both 1st nodes */
+								equivalent = new Resistor(((Resistor)temp.get(0)).getR()+((Resistor)temp.get(1)).getR(),temp.get(0).getNode1(),temp.get(1).getNode1());
 							}
-							/* else if the first component has its first node at 0, but is also not connected to node 1 (as that is following normal convention of looking forwards) */
-							else if(zeroNode1 && !zeroNode2 && temp.get(0).getNode2().getId()!=1) {
-								/* queue equivalent resistor to be added */
-								Resistor equivalent = new Resistor(((Resistor)temp.get(0)).getR()+((Resistor)temp.get(1)).getR(),temp.get(0).getNode1(),temp.get(1).getNode2());
-								toConnect.add(equivalent);
-								temp.clear();
-								System.out.println(3);
-							}
-							/* else ignore */
-							else {
-								/* queue equivalent resistor to be added */
-								Resistor equivalent = new Resistor(((Resistor)temp.get(0)).getR()+((Resistor)temp.get(1)).getR(),temp.get(0).getNode1(),temp.get(1).getNode2());
-								toConnect.add(equivalent);
-								temp.clear();
-								System.out.println(4);
+							toConnect.add(equivalent);
+							System.out.println("added :"+equivalent.toString());
 							}
 						temp.clear();
-						}
+						nodalCase = 0;
 					}
 				}
 			}
@@ -269,6 +264,7 @@ public class CircuitAnalysis {
 						/* remove it from components */
 						remove.getNode1().disconnect(remove);
 						remove.getNode2().disconnect(remove);
+						System.out.println("removed :"+components.get(i));
 						components.remove(i);
 						/* need to consider that components has shrunk by 1 */
 						i--;
