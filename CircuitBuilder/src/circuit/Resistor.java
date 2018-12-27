@@ -68,4 +68,9 @@ public class Resistor extends Component{
     public String toString(){
         return "R"+this.getId()+" "+this.getNodes()[0]+" "+this.getNodes()[1]+" "+this.resistance+" Ohms";
     }
+    
+    /* a toString that does not display the resistor Id */
+    public String toStringFinal() {
+        return "Req "+this.getNodes()[0]+" "+this.getNodes()[1]+" "+this.resistance+" Ohms";
+    }
 }

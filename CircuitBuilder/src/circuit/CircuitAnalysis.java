@@ -44,17 +44,12 @@ public class CircuitAnalysis {
 		this.analyzeVoltage();
 		/* find total resistance of the circuit */
 		this.analyzeResistance();
-		/* print out equivalent components */
-		System.out.print("Final circuit contains:");
-		System.out.println(components.toString());
-		System.out.println("");
 		/* print out calculated circuit characteristics */
 		this.printCharacteristics();
 	}
 
-	/* find total voltage */
+	/* find total voltage - note that this program can currently only handle directly serial voltage (connected in series to each other)*/
 	protected void analyzeVoltage() {
-		/* note that this program can currently only handle directly serial voltage (connected in series to each other) */
 		/* for each component */
 		for (int i = 0; i<components.size();i++) {
 			/* if it is a voltage */
@@ -72,14 +67,13 @@ public class CircuitAnalysis {
 		this.analyzeParallelSameNode();
 		
 		/* combine serial and multi-node parallel resistors until only 1 mega-equivalent resistor remains */
-		/* remove testParameter once testing is finished */
-		int testParameter = 0;
+		int avoidInfiniteLoops = 0;
 		while(components.size()>this.VoltageSources+1) {
-			if(testParameter>15) {
+			if(avoidInfiniteLoops>15) {
 				break;
 			}
 			this.analyzeSerialResistances();
-			testParameter++;
+			avoidInfiniteLoops++;
 		}
 		
 		/* now that all resistors are serial resistors, for each component */
@@ -168,7 +162,6 @@ public class CircuitAnalysis {
 	protected void analyzeSerialResistances() {
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> toRemove = new ArrayList<>();
-		ArrayList<Component> toConnect = new ArrayList<>();
 		int nodalCase = 0;
 		/* for each node */
 		for(Node node1:nodeList) {

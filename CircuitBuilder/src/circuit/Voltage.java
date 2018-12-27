@@ -59,4 +59,9 @@ public class Voltage extends Component{
     public String toString(){
         return "V"+this.getId()+" "+this.getNodes()[0]+" "+this.getNodes()[1]+" "+this.voltage+" Volts DC";
     }
+    
+    /* required override for resistor subclass, but not needed for voltage sources */
+    public String toStringFinal() {
+        return "V"+this.getId()+" "+this.getNodes()[0]+" "+this.getNodes()[1]+" "+this.voltage+" Volts DC";
+    }
 }

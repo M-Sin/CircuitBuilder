@@ -95,4 +95,7 @@ public abstract class Component {
     /* make components override toString() */
     @Override
     public abstract String toString();
+    
+    /* desire a toString that displays different information */
+    public abstract String toStringFinal();
 }
