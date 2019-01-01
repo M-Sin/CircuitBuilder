@@ -6,11 +6,9 @@ import java.util.Scanner;
 /**
  * Main function that creates a circuit, and takes input from user to add resistors or voltage sources to the circuit, and display components within the circuit.
  * 
- * Plan to add functionality later to allow parallel resistors across any node. Currently the program only handles parallel resistors across the same node.
- * 
  * Plan to add functionality that would allow inductors and capacitors to the circuit, using rectangular form complex calculations, and possibly phasors.
  * 
- * Plan to add functionality that will allow voltage sources placed in parallel loops within the circuit.
+ * Plan to add functionality that will allow voltage sources to be placed anywhere within the circuit.
  * 
  * Plan to add functionality that will calculate voltages at each node and current leaving each node.
  * 
@@ -18,11 +16,13 @@ import java.util.Scanner;
  * 
  * Plan to add try/catch blocks to correct errors during runtime.
  * 
- * V1.145
+ * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
+ * 
+ * V2.0
  * 
  * @author Michael Sinclair.
- * @version 0.1.
- * @since 23 December 2018.
+ * @version 2.0
+ * @since 31 December 2018.
 */
 
 public class UserMain {
@@ -66,14 +66,14 @@ public class UserMain {
         System.out.println("For example: R 1 2 10 will add a resistor connected to nodes 1 and 2 with a resistance of 10 Ohms.");
         System.out.println("");
         System.out.println("Rules:");
-        System.out.println("Voltage/Resistor values must be non-zero and Resistor values must also be non-negative.");
+        System.out.println("Voltage/Resistor values must be non-zero and Resistor values must also be non-negative. Voltage polarity is directed to increasing node Id.");
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V1.145");
-        System.out.println("Currently the program only supports purely directly serial voltage sources.");
+        System.out.println("V2.0 Notes:");
+        System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
+        System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes and voltages must be placed directly in series with each other only.");
-        System.out.println("The program currently does not support parallel resistors between multiple nodes, only multiple resistors across the same two nodes.");
         
         /*Request user input.*/
         String input = UserMain.user.nextLine();
@@ -85,13 +85,25 @@ public class UserMain {
         		 
         		 System.out.println("Add a resistor or a voltage.");
         	    input = UserMain.user.nextLine();
-	            /*If resistor is being added - note strict input validation not required.*/
+	            /* If resistor is being added - note strict input validation to be added later. */
 	            if (input.charAt(0) == 'r'||input.charAt(0) == 'R' ){
+	            	int firstNode = 0;
+	            	int secondNode=0;
+	            	double rVal=0.0;
+	            	boolean inputValidation = false;
 	                /*Split input into various fields.*/
-	                String[] inputSplit = input.split(" ");
-	                int firstNode = Integer.parseInt(inputSplit[1]);
-	                int secondNode = Integer.parseInt(inputSplit[2]);
-	                double rVal = Double.parseDouble(inputSplit[3]);
+	            	while(!inputValidation) {
+		            	try {
+			                String[] inputSplit = input.split(" ");
+			                firstNode = Integer.parseInt(inputSplit[1]);
+			                secondNode = Integer.parseInt(inputSplit[2]);
+			                rVal = Double.parseDouble(inputSplit[3]);
+		            	} catch (Exception e) {
+		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Try again.");
+		            		input = UserMain.user.nextLine();
+		            	}
+		            	break;
+	            	}
 	                
 	                /* create nodes if they do not already exist*/
 	                NodeChecker evaluate = new NodeChecker(firstNode,secondNode,nodeList);
@@ -115,12 +127,21 @@ public class UserMain {
 	                
 	            }
 	            
-	            /*If voltage source is being added - note that again strict validation not required.*/
+	            /* If voltage source is being added - note that again strict validation to be added later. */
 	            else if (input.charAt(0) == 'v'||input.charAt(0) == 'V'){
-	                String[] input_split = input.split(" ");
-	                int firstNode = Integer.parseInt(input_split[1]);
-	                int secondNode = Integer.parseInt(input_split[2]);
-	                double vVal = Double.parseDouble(input_split[3]);
+	            	int firstNode = 0;
+	            	int secondNode=0;
+	            	double vVal=0.0;
+	                /*Split input into various fields.*/
+	            	try {
+		                String[] inputSplit = input.split(" ");
+		                firstNode = Integer.parseInt(inputSplit[1]);
+		                secondNode = Integer.parseInt(inputSplit[2]);
+		                vVal = Double.parseDouble(inputSplit[3]);
+	            	} catch (Exception e) {
+	            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Try again.");
+	            		input = UserMain.user.nextLine();
+	            	}
 	                
 	                /* create nodes if they do not already exist*/
 	                NodeChecker evaluate = new NodeChecker(firstNode,secondNode,nodeList);
@@ -253,14 +274,7 @@ public class UserMain {
 	            	System.out.println("");
 	            	
 	            	CircuitAnalysis Calculate = new CircuitAnalysis(Integer.parseInt(input), cir.getComponents(), nodeList);
-	            	Calculate.analyzeCircuit();
-	            	
-	            	/* test circuit after analysis */
-	            	//System.out.println("");
-            		//System.out.println("Components in circuit after analysis are:");
-	            	//System.out.println(cir.toString());
-	            	//System.out.println("");
-	            	
+	            	Calculate.analyzeCircuit();           	
 	            	System.out.println("");
 	            	break;
             	}

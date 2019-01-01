@@ -4,12 +4,11 @@ package circuit;
  * 
  * It contains a voltage value.
  * 
- *  It also contains an inherited Id as well as two connected nodes from the Component class.
+ * It also contains an inherited Id as well as two connected nodes from the Component class.
  *  
- * 
  * @author Michael Sinclair.
- * @version 0.1.
- * @since 23 December 2018.
+ * @version 2.0
+ * @since 31 December 2018.
 */
 
 public class Voltage extends Component{

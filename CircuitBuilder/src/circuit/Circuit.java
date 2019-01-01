@@ -10,8 +10,8 @@ import java.util.ArrayList;
 * 
 * 
 * @author Michael Sinclair.
-* @version 0.1.
-* @since 23 December 2018.
+ * @version 2.0
+* @since 31 December 2018.
 * */
 
 public class Circuit {
