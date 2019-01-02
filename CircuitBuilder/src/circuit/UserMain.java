@@ -21,7 +21,7 @@ import java.util.Scanner;
  * V2.0
  * 
  * @author Michael Sinclair.
- * @version 2.1
+ * @version 2.11
  * @since 2 January 2019.
 */
 
@@ -70,10 +70,11 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.1 Notes:");
+        System.out.println("V2.11 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes and voltages must be placed directly in series with each other only.");
+        System.out.println("");
         
         /* Request user input with input verification */
         String input = null;
@@ -365,12 +366,14 @@ public class UserMain {
                 				cir.getComponents().get(i).getNode2().disconnect(cir.getComponents().get(i));
                 				cir.getComponents().remove(i);
                 				System.out.println("Removed component.");
+                				/* stop searching */
                 				flag = true;
                 				break;
                 			}
                 		}
                 	}
                 	if (!flag) {
+                		/* if it was never found*/
                 		System.out.println("Resistor not found.");
                 		}
                }

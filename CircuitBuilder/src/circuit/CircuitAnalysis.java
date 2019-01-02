@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.1
+ * @version 2.11
  * @since 2 January 2019.
 */
 
@@ -70,13 +70,11 @@ public class CircuitAnalysis {
 	/* find resistance */
 	protected void analyzeResistance() {
 		/* while more than 1 resistor exists */
-		int avoidInfinite = 0;
-		while(components.size()>this.VoltageSources+1 && avoidInfinite < 100) {
+		while(components.size()>this.VoltageSources+1) {
 			/* reduce parallel resistors across the same nodes to one resistor */
 			this.analyzeParallelSameNode();
 			/* reduce serial resistors individually in the circuit */
 			this.analyzeSeriesIndividually();
-			avoidInfinite++;
 		}
 		
 		/* now that there is only one resistor in the circuit */
