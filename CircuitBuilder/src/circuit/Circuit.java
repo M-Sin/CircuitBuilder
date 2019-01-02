@@ -2,17 +2,17 @@ package circuit;
 import java.util.ArrayList;
 
 /**
-* The circuit to which components can be added to. 
-* 
-* An object of this class exists in the program as a singleton object. 
-* 
-* It holds the ArrayList of components in the circuit.
-* 
-* 
-* @author Michael Sinclair.
- * @version 2.0
-* @since 31 December 2018.
-* */
+ * The circuit to which components can be added to. 
+ * 
+ * An object of this class exists in the program as a singleton object. 
+ * 
+ * It holds the ArrayList of components in the circuit.
+ * 
+ * 
+ * @author Michael Sinclair.
+ * @version 2.1
+ * @since 2 January 2019.
+*/
 
 public class Circuit {
 	

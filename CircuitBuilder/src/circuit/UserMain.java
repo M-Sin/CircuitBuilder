@@ -21,21 +21,21 @@ import java.util.Scanner;
  * V2.0
  * 
  * @author Michael Sinclair.
- * @version 2.0
- * @since 31 December 2018.
+ * @version 2.1
+ * @since 2 January 2019.
 */
 
 public class UserMain {
     
     /*Instance variables.*/
     
-    /**Need to take input from user.*/
+    /* Need to take input from user */
     protected static Scanner user;
     
-    /**Need dynamic node list to ensure only one node exists per node id.*/
+    /* Need dynamic node list to ensure only one node exists per node id */
     protected static ArrayList<Node> nodeList;
     
-    /**Constructor to initialize instance variables.*/
+    /* Constructor to initialize instance variables */
     protected UserMain(){
         UserMain.user = new Scanner(System.in);
         UserMain.nodeList = new ArrayList<>();    
@@ -44,7 +44,7 @@ public class UserMain {
      * @param args.*/
 	public static void main(String[] args){
         
-        /*Create objects in main.*/
+        /* Create objects in main */
         Circuit cir = Circuit.getInstance();
         @SuppressWarnings("unused")
 		UserMain instance = new UserMain();
@@ -70,41 +70,124 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.0 Notes:");
+        System.out.println("V2.1 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes and voltages must be placed directly in series with each other only.");
         
-        /*Request user input.*/
-        String input = UserMain.user.nextLine();
+        /* Request user input with input verification */
+        String input = null;
+        while(true) {
+			try {
+				/* test inputs */
+				input = UserMain.user.nextLine();
+				if(input.equals("add")) {
+					break;
+				}
+				if(input.equals("edit")) {
+					break;
+				}
+				if(input.equals("display")) {
+					break;
+				}
+				if(input.equals("calculate")) {
+					break;
+				}
+				if(input.equals("end")) {
+					break;
+				}
+				/* if not a viable input, allow user to retry */
+				throw new IllegalArgumentException("Enter a valid input.");
+			} catch (Exception e) {
+				/* instruct user on error and to retry */
+				System.out.println(e);
+				System.out.println("Retry:");
+			}
+        }
         
-        /*While the program is not requested to end.*/
+        /* While the program is not requested to end */
          while (!"end".equals(input)){
         	 
+        	 /* if adding a component */
         	 if ("add".equals(input)) {
         		 
-        		 System.out.println("Add a resistor or a voltage.");
-        	    input = UserMain.user.nextLine();
-	            /* If resistor is being added - note strict input validation to be added later. */
-	            if (input.charAt(0) == 'r'||input.charAt(0) == 'R' ){
+        		 /* request details with input verification */
+        		System.out.println("Add a resistor or a voltage.");
+    			input = UserMain.user.nextLine();
+        		while(true){
+	        			try {
+	        			String[] testCase = input.split(" ");
+	        			/* if not the proper number of data entities in order to test further down */
+		                if(testCase.length!=4) {
+		                	/* throw exception to keep user within loop */
+		                	throw new IllegalArgumentException("Input must be R/V X Y Z.");
+		                }
+		                /* otherwise allow program to proceed */
+		                break;
+	        		} catch (IllegalArgumentException e) {
+	    				/* instruct user on error and to retry */
+	        			System.out.println(e);
+	        			System.out.println("Try again:");
+	            	    input = UserMain.user.nextLine();
+	        		}
+        		}
+        		
+	            /* If resistor is being added */
+	            if ((input.charAt(0) == 'r'||input.charAt(0) == 'R')&&input.charAt(1)==' '){
 	            	int firstNode = 0;
 	            	int secondNode=0;
 	            	double rVal=0.0;
-	            	boolean inputValidation = false;
-	                /*Split input into various fields.*/
-	            	while(!inputValidation) {
+	            	
+	                /* Split input into various fields with input validation */
+	            	while(true) {
 		            	try {
 			                String[] inputSplit = input.split(" ");
+		        			/* if not the proper number of data entities */
+			                if(inputSplit.length!=4) {
+			                	/* throw exception to keep user within loop */
+			                	throw new IllegalArgumentException("Input must be R X Y Z.");
+			                }
+			                /* store the data */
+			                String testLetter = inputSplit[0];
 			                firstNode = Integer.parseInt(inputSplit[1]);
 			                secondNode = Integer.parseInt(inputSplit[2]);
 			                rVal = Double.parseDouble(inputSplit[3]);
-		            	} catch (Exception e) {
-		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Try again.");
-		            		input = UserMain.user.nextLine();
+			                /* if not a resistor entered */
+			                if (!testLetter.equals("r")) {
+			                	if(!testLetter.equals("R")) {
+				                	/* throw exception to keep user within loop */
+			                		throw new IllegalArgumentException("You must enter a resistor.");
+			                	}
+			                }
+			                /* no negative resistances - testing against a double so do not test against exactly 0 due to imprecision in floating point numbers */
+			                if(rVal < 0.00001){
+			                	throw new IllegalArgumentException("You enterred a resistance of "+rVal+". Resistances must be positive and non-zero.");
+			                }
+			                /* component must be connected to two different nodes */
+			                if(firstNode == secondNode) {
+			                	throw new IllegalArgumentException("Components must be connected to two different nodes.");
+			                }
+			                /* only reached if no exceptions are thrown */
+			                break;
+			            /* note could just catch all exceptions since the retry message is the same, but that is bad practice */
+		            	} catch (NumberFormatException e) {
+		    				/* instruct user on error and to retry */
+		            		System.out.println(e);
+		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
+		            	    input = UserMain.user.nextLine();
+		            	} catch(IllegalArgumentException e) {
+		    				/* instruct user on error and to retry */
+		            		System.out.println(e);
+		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
+		            	    input = UserMain.user.nextLine();
+		            	} catch (ArrayIndexOutOfBoundsException e) {
+		    				/* instruct user on error and to retry */
+		            		System.out.println(e);
+		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
+		            	    input = UserMain.user.nextLine();
 		            	}
-		            	break;
 	            	}
-	                
+	            	
 	                /* create nodes if they do not already exist*/
 	                NodeChecker evaluate = new NodeChecker(firstNode,secondNode,nodeList);
 	                @SuppressWarnings("unused")
@@ -127,20 +210,56 @@ public class UserMain {
 	                
 	            }
 	            
-	            /* If voltage source is being added - note that again strict validation to be added later. */
-	            else if (input.charAt(0) == 'v'||input.charAt(0) == 'V'){
+	            /* If voltage source is being added */
+	            else if ((input.charAt(0) == 'v'||input.charAt(0) == 'V')&&input.charAt(1)==' '){
 	            	int firstNode = 0;
 	            	int secondNode=0;
 	            	double vVal=0.0;
-	                /*Split input into various fields.*/
-	            	try {
-		                String[] inputSplit = input.split(" ");
-		                firstNode = Integer.parseInt(inputSplit[1]);
-		                secondNode = Integer.parseInt(inputSplit[2]);
-		                vVal = Double.parseDouble(inputSplit[3]);
-	            	} catch (Exception e) {
-	            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Try again.");
-	            		input = UserMain.user.nextLine();
+	            	
+	                /* Split input into various fields with input validation */
+	            	while(true) {
+		            	try {
+			                String[] inputSplit = input.split(" ");
+		        			/* if not the proper number of data entities */
+			                if(inputSplit.length!=4) {
+			                	/* throw exception to keep user within loop */
+			                	throw new IllegalArgumentException("Input must be R X Y Z.");
+			                }
+			                /* store the data */
+			                String testLetter = inputSplit[0];
+			                firstNode = Integer.parseInt(inputSplit[1]);
+			                secondNode = Integer.parseInt(inputSplit[2]);
+			                vVal = Double.parseDouble(inputSplit[3]);
+			                /* if not a voltage entered */
+			                if (!testLetter.equals("v")) {
+			                	if(!testLetter.equals("V")) {
+				                	/* throw exception to keep user within loop */
+			                		throw new IllegalArgumentException("You must enter a voltage.");
+			                	}
+			                }
+			                /* component must be connected to two different nodes */
+			                if(firstNode == secondNode) {
+			                	throw new IllegalArgumentException("Components must be connected to two different nodes.");
+			                }
+			                /* only reached if no exceptions are thrown */
+			                break;
+			            /* note could just catch all exceptions since the retry message is the same, but that is bad practice */
+		            	} catch (NumberFormatException e) {
+		            		/* instruct user on error and to retry */
+		            		System.out.println(e);
+		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
+		            	    input = UserMain.user.nextLine();
+		            	} catch(IllegalArgumentException e) {
+		            		/* instruct user on error and to retry */
+		            		System.out.println(e);
+		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
+		            	    input = UserMain.user.nextLine();
+		            	} catch (ArrayIndexOutOfBoundsException e) {
+		            		/* instruct user on error and to retry */
+		            		System.out.println(e);
+		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
+		            	    input = UserMain.user.nextLine();
+		            	}
 	            	}
 	                
 	                /* create nodes if they do not already exist*/
@@ -164,20 +283,72 @@ public class UserMain {
 	                System.out.println("Voltage added: "+vol.toString());
 	                
 	            }
+	            /* catch other bad inputs */
+	            else {
+	            	System.out.println("Invalid input. Enter a voltage source or resistor with the following syntax R/V X Y Z. Try again:");
+	            	input = UserMain.user.nextLine();
+	            }
         	 }
 	            
             /* option to remove components */
-            
             else if ("edit".equals(input)){
             	System.out.println("Which component would you like to remove? Enter only the unique identifier with no spaces (Ex. R1 or V2):");
                 /* store values */
             	input = UserMain.user.nextLine();
-            	char[] question = input.toCharArray();
-                char Letter = question[0];
-                String Number="";
-                for (int j = 1; j<question.length;j++){
-                	Number += question[j];
-                }
+            	/* store input */
+            	char[] question = null;
+            	/* initialize Letter with a dummy value */
+            	char Letter = '\0';
+            	String Number = "";
+            	/* test user input */
+            	while(true) {
+	            	try {
+	            		/* store each character separately */
+	            		question = input.toCharArray();
+	            		/* if the first character entered is not in fact a character */
+	            		if(!Character.isLetter(question[0])) {
+	            			/* instruct user on error and to retry */
+	            			throw new IllegalArgumentException("Select a resistor with 'R' or a voltage with 'V'.");
+	            		}
+	            		Letter = question[0];
+	            		/* find the Id of the requested value */
+	            		for (int j = 1; j<question.length;j++){
+	            			Number += question[j];
+	            		}
+	            		/* if not an integer, this will throw a NumberFormatException */
+	            		Integer.parseInt(Number);
+	            		/* if a voltage or resistor are not selected */
+	            		if(Letter!='r') {
+	            			if(Letter!='R') {
+	            				if(Letter!='v') {
+	            					if(Letter!='V') {
+	            						throw new IllegalArgumentException("Select a resistor with 'R' or a voltage with 'V'.");
+	            					}
+	            				}
+	            			}
+	            		}
+	            		/* if the Number string does not contain at least one character */
+	            		if(Number.length()<1) {
+	            			throw new IllegalArgumentException("Must enter the unique Id of the component you wish to remove.");
+	            		}
+	            		/* if no exceptions are thrown */
+	            		break;
+	            	} catch(IllegalArgumentException e) {
+	            		/* instruct user on error and to retry */
+	            		System.out.println(e);
+	            		System.out.println("Invalid input. Enter only the Letter (R or V) and the number of the component you wish to remove. Try again:");
+	            		/* clear the Number string or else previous values will still be held within the string */
+	            		Number = "";
+	            	    input = UserMain.user.nextLine();
+	            	} catch (ArrayIndexOutOfBoundsException e) {
+	            		/* instruct user on error and to retry */
+	            		System.out.println(e);
+	            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
+	            		/* clear the Number string or else previous values will still be held within the string */
+	            		Number = "";
+	            	    input = UserMain.user.nextLine();
+	            	}
+            	}
                 
                 /* if resistor requested */
                 if (Letter == 'r' || Letter == 'R') {
@@ -228,9 +399,8 @@ public class UserMain {
                 		System.out.println("Resistor not found.");
                 		}
                }
-                
-                /* if bad input */
-                else System.out.println("Input component not recognized.");
+               /* if bad input */
+               else System.out.println("Input component not recognized.");
             }
         
             /*If 'display' is input - print out the circuit components.*/
@@ -251,13 +421,22 @@ public class UserMain {
             	if(cir.getComponents().size()!=0) {
 	            	/* get ground voltage */
                     System.out.println("");
-	            	System.out.println("Where is the ground voltage? Enter the node ID number only.");
+	            	System.out.println("Where is the ground voltage? Enter the unique node ID number only.");
 	                input = UserMain.user.nextLine();
-	                /* input verification should be added here*/
+	                /* input verification */
+	                int ground;
+	                while(true) {
+		                try {
+		                	ground = Integer.parseInt(input);
+		                	break;
+		            	} catch (NumberFormatException e) {
+		            		System.out.println("Invalid input. Enter only the node ID (an integer value):");
+		            	    input = UserMain.user.nextLine();
+		            	}
+	                }
 	            	System.out.println("Calculating:");
-	            	/* sort the ArrayList of components by node 1 and node 2 (smaller of both first) */
-	            	/* needed for consistent calculations */
 	            	
+	            	/* sort the ArrayList of components by node 1 and node 2 (smaller of both first) */
 	            	for (int j = 0; j<cir.getComponents().size();j++) {
 		            	for (int i = 0; i<cir.getComponents().size()-1;i++) {
 		            		if (cir.getComponents().get(i).compare(cir.getComponents().get(i+1))>0) {
@@ -273,9 +452,11 @@ public class UserMain {
 	            	System.out.println(cir.toString());
 	            	System.out.println("");
 	            	
-	            	CircuitAnalysis Calculate = new CircuitAnalysis(Integer.parseInt(input), cir.getComponents(), nodeList);
+	            	/* perform the circuit analysis */
+	            	CircuitAnalysis Calculate = new CircuitAnalysis(ground, cir.getComponents(), nodeList);
 	            	Calculate.analyzeCircuit();           	
 	            	System.out.println("");
+	            	/* end the program */
 	            	break;
             	}
             	else {
@@ -283,9 +464,9 @@ public class UserMain {
             	}
             }
         
-            /*Strict input validation not required, but this will allow wildly incorrect inputs to loop back.*/
+            /* loop back for invalid inputs */
             else{
-                System.out.println("Invalid input.");
+                System.out.println("Invalid input. Enter a valid command.");
             }
         /*Request next instruction.*/
         input = UserMain.user.nextLine();

@@ -3,13 +3,13 @@ import java.util.ArrayList;
 
 /**
 * A node class, to connect circuit components.
-* 
-* Contains an id that describes the node, as well as the voltage at the node (to be added), the current leaving the node (to be added) and an array list of components attached to the node.
-* 
-* 
-* @author Michael Sinclair.
- * @version 2.0
-* @since 31 December 2018.
+ * 
+ * Contains an id that describes the node, as well as the voltage at the node (to be added), the current leaving the node (to be added) and an array list of components attached to the node.
+ * 
+ * 
+ * @author Michael Sinclair.
+ * @version 2.1
+ * @since 2 January 2019.
 */
 
 public class Node {
