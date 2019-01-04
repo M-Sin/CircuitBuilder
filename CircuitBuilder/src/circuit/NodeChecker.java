@@ -7,10 +7,12 @@ import java.util.ArrayList;
  * 
  * Decided to compartmentalize this portion of the program to remove large duplicate code blocks and simplify UserMain.
  * 
+ * Would likely normally just make this a method within UserMain.
+ * 
  * 
  * @author Michael Sinclair.
- * @version 2.1
- * @since 2 January 2019.
+ * @version 2.12
+ * @since 4 January 2019.
 */
 
 public class NodeChecker {

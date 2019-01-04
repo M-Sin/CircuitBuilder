@@ -6,23 +6,20 @@ import java.util.Scanner;
 /**
  * Main function that creates a circuit, and takes input from user to add resistors or voltage sources to the circuit, and display components within the circuit.
  * 
- * Plan to add functionality that would allow inductors and capacitors to the circuit, using rectangular form complex calculations, and possibly phasors.
+ * Plan to add functionality that would allow inductors and capacitors to the circuit, likely using rectangular form complex calculations, and possibly phasors.
  * 
  * Plan to add functionality that will allow voltage sources to be placed anywhere within the circuit.
  * 
  * Plan to add functionality that will calculate voltages at each node and current leaving each node.
  * 
- * Plan to add functionality that will allow calculate to provide circuit characteristics, then allow the user to add more components if desired rather than end the program.
- * 
- * Plan to add try/catch blocks to correct errors during runtime.
+ * Plan to add functionality that will allow calculate to provide circuit characteristics, then allow the user to add more components 
+ * if desired rather than end the program (achieved by copying the components ArrayList rather than operating on it ).
  * 
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
- * V2.0
- * 
  * @author Michael Sinclair.
- * @version 2.11
- * @since 2 January 2019.
+ * @version 2.12
+ * @since 4 January 2019.
 */
 
 public class UserMain {
@@ -70,7 +67,7 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.11 Notes:");
+        System.out.println("V2.12 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes and voltages must be placed directly in series with each other only.");
@@ -373,7 +370,7 @@ public class UserMain {
                 		}
                 	}
                 	if (!flag) {
-                		/* if it was never found*/
+                		/* if it was not found*/
                 		System.out.println("Resistor not found.");
                 		}
                }
@@ -398,8 +395,9 @@ public class UserMain {
                 			}
                 		}
                 	}
+            		/* if it was not found*/
                 	if (!flag) {
-                		System.out.println("Resistor not found.");
+                		System.out.println("Voltage not found.");
                 		}
                }
                /* if bad input */
@@ -408,12 +406,14 @@ public class UserMain {
         
             /*If 'display' is input - print out the circuit components.*/
             else if ("display".equals(input)){
+            	/* if there are components */
             	if(cir.getComponents().size()>0) {
 	            	System.out.println("");
             		System.out.println("Components in circuit are:");
             		System.out.println(cir.toString());
 	            	System.out.println("");
             	}
+            	/* otherwise - needed to avoid trying to print an empty array */
             	else {
             		System.out.println("No Components have been added yet.");
             	}
@@ -421,12 +421,13 @@ public class UserMain {
             
             /* calculate Total Current/Voltage */
             else if ("calculate".equals(input)) {
+            	/* if there are components in the circuit */
             	if(cir.getComponents().size()!=0) {
 	            	/* get ground voltage */
                     System.out.println("");
 	            	System.out.println("Where is the ground voltage? Enter the unique node ID number only.");
 	                input = UserMain.user.nextLine();
-	                /* input verification */
+	                /* input verification - ground functionality to be added later */
 	                int ground;
 	                while(true) {
 		                try {
@@ -437,6 +438,7 @@ public class UserMain {
 		            	    input = UserMain.user.nextLine();
 		            	}
 	                }
+	            	System.out.println("");
 	            	System.out.println("Calculating:");
 	            	
 	            	/* sort the ArrayList of components by node 1 and node 2 (smaller of both first) */
@@ -457,11 +459,12 @@ public class UserMain {
 	            	
 	            	/* perform the circuit analysis */
 	            	CircuitAnalysis Calculate = new CircuitAnalysis(ground, cir.getComponents(), nodeList);
-	            	Calculate.analyzeCircuit();           	
-	            	System.out.println("");
+	            	Calculate.analyzeCircuit();
 	            	/* end the program */
 	            	break;
+
             	}
+            	/* if no components in the circuit - needed to avoid trying to operate on an empty circuit (empty array) */
             	else {
             		System.out.println("Must have components in circuit before calculating.");
             	}
@@ -469,7 +472,7 @@ public class UserMain {
         
             /* loop back for invalid inputs */
             else{
-                System.out.println("Invalid input. Enter a valid command.");
+                System.out.println("Invalid input. Enter a valid command as specified in the instructions.");
             }
         /*Request next instruction.*/
         input = UserMain.user.nextLine();

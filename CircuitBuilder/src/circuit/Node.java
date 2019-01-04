@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.1
- * @since 2 January 2019.
+ * @version 2.12
+ * @since 4 January 2019.
 */
 
 public class Node {
@@ -64,8 +64,7 @@ public class Node {
     
     protected ArrayList<Component> getAttachments(){
     	return this.attachments;
-    }
-    
+    }   
     
     /**Display node id
      * @return String.*/

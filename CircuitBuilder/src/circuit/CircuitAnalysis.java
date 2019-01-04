@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.11
- * @since 2 January 2019.
+ * @version 2.12
+ * @since 4 January 2019.
 */
 
 public class CircuitAnalysis {
@@ -21,6 +21,7 @@ public class CircuitAnalysis {
 	private ArrayList<Node> nodeList;
 	private ArrayList<Component> components;
 	private int ground;
+	/* to calculate characteristics */
 	private double totalV;
 	private double totalR;
 	private int VoltageSources;
@@ -28,12 +29,12 @@ public class CircuitAnalysis {
 	protected CircuitAnalysis(int ground, ArrayList<Component> components, ArrayList<Node> nodeList) {
 		/* initialize variables */
 		this.ground = ground;
-		this.components = components;
-		this.nodeList = nodeList;
 		this.totalR = 0.0;
 		this.totalV = 0.0;
 		this.VoltageSources = 0;
-		}
+		this.components = components;
+		this.nodeList = nodeList;
+	}
 	
 	
 	
@@ -77,11 +78,11 @@ public class CircuitAnalysis {
 			this.analyzeSeriesIndividually();
 		}
 		
-		/* now that there is only one resistor in the circuit */
+		/* now that there is only one resistor in the circuit iterate through the circuit */
 		for (int i = 0; i<components.size();i++) {
 			/* if it is a resistor */
 			if (components.get(i) instanceof Resistor) {
-				/* get the resistance */
+				/* get the resistance - note this only executes once */
 				this.totalR+=((Resistor)components.get(i)).getR();
 			}
 		}
@@ -123,8 +124,8 @@ public class CircuitAnalysis {
 							for(Component remove:temp) {
 								toRemove.add(remove);
 							}
-							temp.clear();
 						}
+						/* clear the list for future calculations */
 						temp.clear();
 					}
 				}
@@ -284,7 +285,6 @@ public class CircuitAnalysis {
 	
 	
 	
-	
 	/* METHOD NO LONGER IN USE - changed algorithm for solving circuit problem - storing it in case it is useful in future */
 	/* Reduce many serial resistors to equivalent resistors */
 	protected void analyzeSerialResistances() {
@@ -388,3 +388,10 @@ public class CircuitAnalysis {
 	}
 	
 }
+
+	
+	
+	
+	
+	
+	

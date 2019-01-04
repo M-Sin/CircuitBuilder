@@ -9,13 +9,14 @@ package circuit;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.1
- * @since 2 January 2019.
+ * @version 2.12
+ * @since 4 January 2019.
  */
 public class Resistor extends Component{
     /*Instance variables.*/
     private double resistance;
     protected static int resnum = 1;
+    /* functionality will be added later */
     private double current_through;
     
     /**Constructor that checks that resistor is non-zero and non-negative, sets resistance and attaches nodes
@@ -54,6 +55,7 @@ public class Resistor extends Component{
     	return this.resistance;
     }
     
+    /* functionality will be added later */
     protected void set_current(double i_c){
     	this.current_through = i_c;
     }
