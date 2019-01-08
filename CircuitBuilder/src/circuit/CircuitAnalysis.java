@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.12
- * @since 4 January 2019.
+ * @version 2.13
+ * @since 8 January 2019.
 */
 
 public class CircuitAnalysis {
@@ -32,8 +32,44 @@ public class CircuitAnalysis {
 		this.totalR = 0.0;
 		this.totalV = 0.0;
 		this.VoltageSources = 0;
-		this.components = components;
-		this.nodeList = nodeList;
+		this.components=components;
+		this.nodeList=nodeList;
+		/* PORTION BELOW IS UNDER CONSTRUCTION */
+		///* copy the ArrayLists so that the User can continue operations after calculation, and to enable node specific calculations based on original list */
+		//this.components = new ArrayList<>(components);
+		//this.nodeList = new ArrayList<>(nodeList);
+		///* have to point the new components list to the new node list and vice versa */
+		///* first clear all attachments */
+		//for(Node node:this.nodeList) {
+		//	node.getAttachments().clear();
+		//}
+		///* now point copied components to the copied nodeList, and attach the components to the nodes */
+		//for (Component comp:this.components) {
+		//	for(Node node:this.nodeList) {
+		//		/* if the component points to this iteration's node */
+		//		if(comp.getNode1().getId()==node.getId()) {
+		//			/* point it to the new copy object in this class nodeList */
+		//			comp.setNode1(node);
+		//			node.connect(comp);
+		//		}
+		//		/* same for second node */
+		//		if(comp.getNode2().getId()==node.getId()) {
+		//			comp.setNode2(node);
+		//			node.connect(comp);
+		//		}
+		//	}
+		//}
+		/* test print */
+		//System.out.println("Components"+components.toString());
+		//System.out.println("Components"+this.components.toString());
+		//System.out.println("Attachments passed in:");
+		//for(Node node:nodeList) {
+		//	System.out.println(node.toStringAttachments());
+		//}
+		//System.out.println("Attachments copied:");
+		//for(Node node:this.nodeList) {
+		//	System.out.println(node.toStringAttachments());
+		//}
 	}
 	
 	
@@ -76,6 +112,7 @@ public class CircuitAnalysis {
 			this.analyzeParallelSameNode();
 			/* reduce serial resistors individually in the circuit */
 			this.analyzeSeriesIndividually();
+			System.out.println(this.components.toString());
 		}
 		
 		/* now that there is only one resistor in the circuit iterate through the circuit */
@@ -286,7 +323,7 @@ public class CircuitAnalysis {
 	
 	
 	/* METHOD NO LONGER IN USE - changed algorithm for solving circuit problem - storing it in case it is useful in future */
-	/* Reduce many serial resistors to equivalent resistors */
+	/* Reduce multiple serial resistors to a single equivalent resistor */
 	protected void analyzeSerialResistances() {
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> toRemove = new ArrayList<>();
