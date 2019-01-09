@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.20
+ * @version 2.201
  * @since 8 January 2019.
 */
 
@@ -35,7 +35,6 @@ public class CircuitAnalysis {
 		this.totalV = 0.0;
 		this.voltageSources = 0;
 		countResistors = 0;
-		/* PORTION BELOW IS UNDER CONSTRUCTION */
 		/* copy the ArrayLists so that the User can continue operations after calculation, and to enable node specific calculations based on original list */
 		this.components = new ArrayList<>(comps);
 		/* have to create new Node objects to avoid altering the input list - basically dereferencing the node objects from the input and creating clone objects of them with t he same id */
