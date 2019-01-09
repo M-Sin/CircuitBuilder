@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.13
+ * @version 2.20
  * @since 8 January 2019.
 */
 
@@ -24,55 +24,44 @@ public class CircuitAnalysis {
 	/* to calculate characteristics */
 	private double totalV;
 	private double totalR;
-	private int VoltageSources;
+	private int voltageSources;
+	/* to rewind resistor Id count for user to continue after calculations */
+	private int countResistors;
 	
-	protected CircuitAnalysis(int ground, ArrayList<Component> components, ArrayList<Node> nodeList) {
+	protected CircuitAnalysis(int ground, ArrayList<Component> comps, ArrayList<Node> nodes) {
 		/* initialize variables */
 		this.ground = ground;
 		this.totalR = 0.0;
 		this.totalV = 0.0;
-		this.VoltageSources = 0;
-		this.components=components;
-		this.nodeList=nodeList;
+		this.voltageSources = 0;
+		countResistors = 0;
 		/* PORTION BELOW IS UNDER CONSTRUCTION */
-		///* copy the ArrayLists so that the User can continue operations after calculation, and to enable node specific calculations based on original list */
-		//this.components = new ArrayList<>(components);
-		//this.nodeList = new ArrayList<>(nodeList);
-		///* have to point the new components list to the new node list and vice versa */
-		///* first clear all attachments */
-		//for(Node node:this.nodeList) {
-		//	node.getAttachments().clear();
-		//}
-		///* now point copied components to the copied nodeList, and attach the components to the nodes */
-		//for (Component comp:this.components) {
-		//	for(Node node:this.nodeList) {
-		//		/* if the component points to this iteration's node */
-		//		if(comp.getNode1().getId()==node.getId()) {
-		//			/* point it to the new copy object in this class nodeList */
-		//			comp.setNode1(node);
-		//			node.connect(comp);
-		//		}
-		//		/* same for second node */
-		//		if(comp.getNode2().getId()==node.getId()) {
-		//			comp.setNode2(node);
-		//			node.connect(comp);
-		//		}
-		//	}
-		//}
-		/* test print */
-		//System.out.println("Components"+components.toString());
-		//System.out.println("Components"+this.components.toString());
-		//System.out.println("Attachments passed in:");
-		//for(Node node:nodeList) {
-		//	System.out.println(node.toStringAttachments());
-		//}
-		//System.out.println("Attachments copied:");
-		//for(Node node:this.nodeList) {
-		//	System.out.println(node.toStringAttachments());
-		//}
+		/* copy the ArrayLists so that the User can continue operations after calculation, and to enable node specific calculations based on original list */
+		this.components = new ArrayList<>(comps);
+		/* have to create new Node objects to avoid altering the input list - basically dereferencing the node objects from the input and creating clone objects of them with t he same id */
+		this.nodeList = new ArrayList<>();
+		for(Node node:nodes) {
+			nodeList.add(new Node(node.getId()));
+		}
+		/* now point copied components to the copied nodeList, and attach the copied components to the copied nodes */
+		for (Component comp:this.components) {
+			for(Node node:this.nodeList) {
+				/* if the component points to this iteration's node */
+				if(comp.getNode1().getId()==node.getId()) {
+					/* point it to the new copy object in this class nodeList */
+					comp.setNode1(node);
+					/* and connect it to the attached copy node */
+					node.connect(comp);
+				}
+				/* same for second node */
+				if(comp.getNode2().getId()==node.getId()) {
+					comp.setNode2(node);
+					node.connect(comp);
+				}
+			}
+		}
 	}
-	
-	
+
 	
 	/* methods */
 	
@@ -82,8 +71,18 @@ public class CircuitAnalysis {
 		this.analyzeVoltage();
 		/* find total resistance of the circuit */
 		this.analyzeResistance();
+		System.out.println("");
 		/* print out calculated circuit characteristics */
 		this.printCharacteristics();
+		/* rewind resistor count for user to continue altering circuit */
+		/* if for some (unknown) reason, the user did not enter any resistors do not alter the resistor count */
+		if(countResistors == 0) {
+			return;
+		}
+		/* for each resistor added, lower the global resistor id number to sync the number back with the user's circuit */
+		for(int i=0;i<countResistors;i++) {
+			Resistor.resnum--;
+		}
 	}
 
 	
@@ -97,7 +96,7 @@ public class CircuitAnalysis {
 				/* get the voltage */
 				this.totalV+=((Voltage)(components.get(i))).getV();
 				/* count voltage sources */
-				this.VoltageSources++;
+				this.voltageSources++;
 			}
 		}
 	}
@@ -107,12 +106,11 @@ public class CircuitAnalysis {
 	/* find resistance */
 	protected void analyzeResistance() {
 		/* while more than 1 resistor exists */
-		while(components.size()>this.VoltageSources+1) {
+		while(components.size()>this.voltageSources+1) {
 			/* reduce parallel resistors across the same nodes to one resistor */
 			this.analyzeParallelSameNode();
 			/* reduce serial resistors individually in the circuit */
 			this.analyzeSeriesIndividually();
-			System.out.println(this.components.toString());
 		}
 		
 		/* now that there is only one resistor in the circuit iterate through the circuit */
@@ -202,10 +200,12 @@ public class CircuitAnalysis {
 		ArrayList<Component> toRemove = new ArrayList<>();
 		Node firstNode = null;
 		Node secondNode = null;
+		/* can only perform this operation a single time before calling it again - resulted in errors created floating resistors that could not be reduced further otherwise */
+		boolean doOnce = false;
 		/* for each node */
 		for(Node node:nodeList) {
 			/* if there are 2 attachments that are both resistors */
-			if (node.getAttachments().size()==2 && node.getAttachments().get(0) instanceof Resistor && node.getAttachments().get(1) instanceof Resistor) {
+			if (node.getAttachments().size()==2 && node.getAttachments().get(0) instanceof Resistor && node.getAttachments().get(1) instanceof Resistor && !doOnce) {
 				/* find first and second node by Id - one must have a first node prior to the current node being tested and one must have a node after */
 				if(node.getAttachments().get(0).getNode1().getId()<node.getAttachments().get(1).getNode1().getId()) {
 					firstNode = node.getAttachments().get(0).getNode1();
@@ -223,6 +223,8 @@ public class CircuitAnalysis {
 						toAdd.add(new Resistor(((Resistor)node.getAttachments().get(0)).getR()+((Resistor)node.getAttachments().get(1)).getR(),firstNode,secondNode));
 					}
 				}
+				/* prevent program from combining more than two serial resistors at the same time */
+				doOnce = true;
 			}
 		}
 		/* combine serial resistors individually - first remove them from the circuit */

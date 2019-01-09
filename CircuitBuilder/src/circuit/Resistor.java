@@ -9,8 +9,8 @@ package circuit;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.12
- * @since 4 January 2019.
+ * @version 2.20
+ * @since 8 January 2019.
  */
 public class Resistor extends Component{
     /*Instance variables.*/

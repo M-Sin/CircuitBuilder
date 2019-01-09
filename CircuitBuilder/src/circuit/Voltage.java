@@ -7,8 +7,8 @@ package circuit;
  * It also contains an inherited Id as well as two connected nodes from the Component class.
  *  
  * @author Michael Sinclair.
- * @version 2.12
- * @since 4 January 2019.
+ * @version 2.20
+ * @since 8 January 2019.
 */
 
 public class Voltage extends Component{

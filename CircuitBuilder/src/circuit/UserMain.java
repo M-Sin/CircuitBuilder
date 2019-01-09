@@ -6,8 +6,6 @@ import java.util.Scanner;
 /**
  * Main function that creates a circuit, and takes input from user to add resistors or voltage sources to the circuit, and display components within the circuit.
  * 
- * Plan to add functionality that will allow user to continue to add components after calculate - this is also necessary for calculating node specific information as well.
- * 
  * Plan to add functionality that will check that the user has input a complete circuit
  * 
  * Plan to add functionality that would allow inductors and capacitors to the circuit, likely using rectangular form complex calculations, and possibly phasors.
@@ -16,13 +14,12 @@ import java.util.Scanner;
  * 
  * Plan to add functionality that will calculate voltages at each node and current leaving each node.
  * 
- * Plan to add functionality that will allow calculate to provide circuit characteristics, then allow the user to add more components 
- * if desired rather than end the program (achieved by copying the components ArrayList rather than operating on it ).
+ * Plan to add functionality that will allow calculate to provide circuit characteristics
  * 
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
  * @author Michael Sinclair.
- * @version 2.13
+ * @version 2.20
  * @since 8 January 2019.
 */
 
@@ -71,13 +68,11 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.13 Notes:");
+        System.out.println("V2.20 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
-        System.out.println("Voltages may not be connected in parallel with resistors across the same two nodes and voltages must be placed directly in series with each other only.");
+        System.out.println("Voltages may not be connected in parallel with resistors.");
         System.out.println("Currently it is the user's responsibility to enter a complete circuit.");
-        /* remove once bug is sorted */
-        System.out.println("Working out a bug currently for parallel node calculation.");
         System.out.println("");
         
         /* Request user input with input verification */
@@ -445,6 +440,7 @@ public class UserMain {
 		            	    input = UserMain.user.nextLine();
 		            	}
 	                }
+
 	            	System.out.println("");
 	            	System.out.println("Calculating:");
 	            	
@@ -467,8 +463,11 @@ public class UserMain {
 	            	/* perform the circuit analysis */
 	            	CircuitAnalysis Calculate = new CircuitAnalysis(ground, cir.getComponents(), nodeList);
 	            	Calculate.analyzeCircuit();
-	            	/* end the program */
-	            	break;
+	            	/* clear the old calculate object */
+	            	Calculate = null;
+	            	/* instruct user to continue altering circuit */
+	            	System.out.println("");
+	            	System.out.println("You may continue to operate on the circuit. Enter a new input command.");
 
             	}
             	/* if no components in the circuit - needed to avoid trying to operate on an empty circuit (empty array) */
