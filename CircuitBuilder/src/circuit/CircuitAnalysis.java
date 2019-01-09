@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.201
+ * @version 2.21
  * @since 8 January 2019.
 */
 
@@ -152,6 +152,8 @@ public class CircuitAnalysis {
 						if(temp.size()>1) {
 							/* create equivalent parallel resistor */
 							Resistor equivalent = new Resistor(this.parallelResistors(temp),this.findNode(n),this.findNode(m));
+							/* for rewinding resistor id */
+							this.countResistors++;
 							/* queue it for connection */
 							toConnect.add(equivalent);
 							/* queue resistors that need to be removed */
@@ -220,6 +222,8 @@ public class CircuitAnalysis {
 						toRemove.add(node.getAttachments().get(0));
 						toRemove.add(node.getAttachments().get(1));
 						toAdd.add(new Resistor(((Resistor)node.getAttachments().get(0)).getR()+((Resistor)node.getAttachments().get(1)).getR(),firstNode,secondNode));
+						/* for rewinding resistor id */
+						this.countResistors++;
 					}
 				}
 				/* prevent program from combining more than two serial resistors at the same time */
