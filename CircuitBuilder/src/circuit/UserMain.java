@@ -6,7 +6,7 @@ import java.util.Scanner;
 /**
  * Main function that creates a circuit, and takes input from user to add resistors or voltage sources to the circuit, and display components within the circuit.
  * 
- * Plan to add functionality that will check that the user has input a complete circuit
+ * Plan to add functionality that will check that the user has input a complete circuit (complete path from node 0 to node 0 through the circuit)
  * 
  * Plan to add functionality that would allow inductors and capacitors to the circuit, likely using rectangular form complex calculations, and possibly phasors.
  * 
@@ -14,13 +14,11 @@ import java.util.Scanner;
  * 
  * Plan to add functionality that will calculate voltages at each node and current leaving each node.
  * 
- * Plan to add functionality that will allow calculate to provide circuit characteristics
- * 
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
  * @author Michael Sinclair.
- * @version 2.21
- * @since 8 January 2019.
+ * @version 2.300
+ * @since 16 January 2019.
 */
 
 public class UserMain {
@@ -68,7 +66,7 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.21 Notes:");
+        System.out.println("V2.300 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors.");
@@ -444,7 +442,7 @@ public class UserMain {
 	            	System.out.println("");
 	            	System.out.println("Calculating:");
 	            	
-	            	/* sort the ArrayList of components by node 1 and node 2 (smaller of both first) */
+	            	/* sort the ArrayList of components by node 1 and node 2 (smaller of both first) - note that by construction, voltages will always have ordered nodes */
 	            	for (int j = 0; j<cir.getComponents().size();j++) {
 		            	for (int i = 0; i<cir.getComponents().size()-1;i++) {
 		            		if (cir.getComponents().get(i).compare(cir.getComponents().get(i+1))>0) {

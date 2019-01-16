@@ -11,8 +11,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.20
- * @since 8 January 2019.
+ * @version 2.300
+ * @since 16 January 2019.
 */
 
 public class NodeChecker {

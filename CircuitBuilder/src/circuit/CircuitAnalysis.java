@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.21
- * @since 8 January 2019.
+ * @version 2.300
+ * @since 16 January 2019.
 */
 
 public class CircuitAnalysis {
@@ -323,6 +323,27 @@ public class CircuitAnalysis {
 		System.out.println("Total current is: "+this.totalV/this.totalR+" Amps.");
 	}
 	
+	/* get methods for testing private instance variables */
+	
+	public ArrayList<Node> getNodeList(){
+		return this.nodeList;
+	}
+	
+	public ArrayList<Component> getComponents(){
+		return this.components;
+	}
+	
+	public double getV() {
+		return this.totalV;
+	}
+	
+	public double getR() {
+		return this.totalR;
+	}
+	
+	public int getG() {
+		return this.ground;
+	}
 	
 	
 	

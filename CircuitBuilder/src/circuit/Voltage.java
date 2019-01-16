@@ -7,8 +7,8 @@ package circuit;
  * It also contains an inherited Id as well as two connected nodes from the Component class.
  *  
  * @author Michael Sinclair.
- * @version 2.20
- * @since 8 January 2019.
+ * @version 2.300
+ * @since 16 January 2019.
 */
 
 public class Voltage extends Component{
@@ -50,6 +50,10 @@ public class Voltage extends Component{
     /* get/set */
     protected double getV() {
     	return this.voltage;
+    }
+    
+    protected void setV(double v) {
+    	this.voltage = v;
     }
     
     /**Print information about voltage source
