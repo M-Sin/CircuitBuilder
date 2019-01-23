@@ -10,8 +10,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.300
- * @since 16 January 2019.
+ * @version 2.301
+ * @since 23 January 2019.
 */
 
 public class Circuit {
@@ -34,13 +34,15 @@ public class Circuit {
 
 	/*Methods.*/
 
-	/* get/set methods*/
+	/** get method to get list of components
+	 * @param none
+	 * @return ArrayList<Component> components*/
 	protected ArrayList<Component> getComponents(){
 		return this.components;
 	}
 
 	/**Add component to circuit
-     * @param c.*/
+     * @param Component c.*/
 	protected void addComponent(Component c){
 		this.components.add(c);
 	}

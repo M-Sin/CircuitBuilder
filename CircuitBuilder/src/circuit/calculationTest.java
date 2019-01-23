@@ -50,24 +50,26 @@ public class calculationTest {
 		testComps.add(new Resistor(60.0,testNodes.get(4),testNodes.get(5)));
 		/* resistor 70 Ohms between nodes 5 and 0 - note that UserMain sorts resistor nodes from smaller to larger when passing the ArrayList into circuit analysis within the calculate command */
 		testComps.add(new Resistor(70.0,testNodes.get(0),testNodes.get(5)));
+		/* ensure the lists contain the right amount of nodes */
+		assertEquals(8,testComps.size());
+		assertEquals(6,testNodes.size());
 	}
 
 	@Test
 	public void testCircuitAnalysis() {
-		/* ensure the lists contain the right amount of nodes */
-		assertEquals(8,testComps.size());
-		assertEquals(6,testNodes.size());
 		/* set the ground to node 2 */
 		testGround = 2;
 		/* build the circuit analysis object and perform the calculations */
 		CircuitAnalysis testCircuit = new CircuitAnalysis(testGround,testComps,testNodes);
 		testCircuit.analyzeCircuit();
 		/* testing total value calculations - use assertTrue to test doubles within a small threshold - expected total resistance of 165.4901961 Ohms & total voltage of 5.0000 V & total current of 0.03021327 Amps - use Math.abs to test magnitude of values */
-		assertTrue(Math.abs(165.4901961-testCircuit.getR())<0.001);
-		assertTrue(Math.abs(5.0-testCircuit.getV())<0.001);
-		assertTrue((Math.abs(0.03021327-(testCircuit.getV()/testCircuit.getR())))<0.001);
+		assertTrue(Math.abs(165.4901961-testCircuit.getR())<0.00001);
+		assertTrue(Math.abs(5.0-testCircuit.getV())<0.00001);
+		assertTrue((Math.abs(0.03021327-(testCircuit.getV()/testCircuit.getR())))<0.00001);
 		assertTrue(testGround == testCircuit.getG());
+		/* note that running this test will print out the circuit characteristics to the console */
 	}
+	
 	
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {

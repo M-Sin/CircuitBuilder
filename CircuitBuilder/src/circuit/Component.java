@@ -7,8 +7,8 @@ package circuit;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.300
- * @since 16 January 2019.
+ * @version 2.301
+ * @since 23 January 2019.
 */
 
 public abstract class Component {
@@ -18,8 +18,8 @@ public abstract class Component {
     protected int id;
     
     /** Superclass constructor 
-     * @param node1
-     * @param node2
+     * @param Node node1
+     * @param Node node2
     */
     protected Component(Node node1, Node node2){
     	this.nodal1 = node1;

@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.300
- * @since 16 January 2019.
+ * @version 2.301
+ * @since 23 January 2019.
 */
 
 public class CircuitAnalysis {
@@ -28,6 +28,12 @@ public class CircuitAnalysis {
 	/* to rewind resistor Id count for user to continue after calculations */
 	private int countResistors;
 	
+	/** Only constructor for this class
+	 * 
+	 * @param int ground
+	 * @param ArrayList<Component> comps
+	 * @param ArrayList<Node> nodes
+	 */
 	protected CircuitAnalysis(int ground, ArrayList<Component> comps, ArrayList<Node> nodes) {
 		/* initialize variables */
 		this.ground = ground;
@@ -64,7 +70,7 @@ public class CircuitAnalysis {
 	
 	/* methods */
 	
-	/* automate circuit measurements */
+	/** No parameters or returns, automates circuit measurements by calling analyzeVoltage(),analyzeResistance(),printCharactersitics() and reduces resistor count for resistors created for circuit calculations */
 	protected void analyzeCircuit() {
 		/* find total voltage and count voltage sources */
 		this.analyzeVoltage();
@@ -86,7 +92,7 @@ public class CircuitAnalysis {
 
 	
 	
-	/* find total voltage - note that this program can currently only handle directly serial voltage (connected in series to each other) */
+	/**No parameters or returns, finds total voltage in the circuit - note that this program can currently only handle directly serial voltage (connected in series to each other) */
 	protected void analyzeVoltage() {
 		/* for each component */
 		for (int i = 0; i<components.size();i++) {
@@ -102,7 +108,7 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* find resistance */
+	/**No parameters or returns, finds total resistance in the circuit */
 	protected void analyzeResistance() {
 		/* while more than 1 resistor exists */
 		while(components.size()>this.voltageSources+1) {
@@ -124,7 +130,7 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* reduce same-node parallel resistors to a single equivalent resistor */
+	/**No parameters or returns, reduces same-node parallel resistors to a single equivalent resistor */
 	protected void analyzeParallelSameNode() {
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> toRemove = new ArrayList<>();
@@ -195,7 +201,7 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* reduce any two serially connected resistors individually */
+	/* No parameters or returns, reduces any two serially connected resistors individually */
 	protected void analyzeSeriesIndividually() {
 		ArrayList<Component> toAdd = new ArrayList<>();
 		ArrayList<Component> toRemove = new ArrayList<>();
@@ -246,7 +252,10 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* Find ArrayList index - note ArrayList has built in remove with object parameter but I wanted to use this instead as I was encountering problems with the built in method */
+	/** Find ArrayList index - note ArrayList has built in remove with object parameter but I wanted to use this instead as I was encountering problems with the built in method 
+	 * @param ArrayList<Component> findList
+	 * @param Component find
+	 * @return int */
 	protected int findIndex(ArrayList<Component> findList, Component find) {
 		int i;
 		/* iterate through ArrayList until object is found */
@@ -260,7 +269,10 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* Determine if resistor already queued for removal, returns true to enable above loop if component is not already queued for removal */
+	/** Determine if resistor already queued for removal, returns true to enable above loop if component is not already queued for removal 
+	 * @param Component resistor
+	 * @param ArrayList<Component> toRemove
+	 * @return boolean*/
 	protected boolean queuedRemoval(Component resistor, ArrayList<Component> toRemove){
 		/* for each component queued for removal */
 		for(Component component:toRemove) {
@@ -276,7 +288,9 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* Find node based on id */
+	/** Find node based on id 
+	 * @param int id
+	 * @return Node*/
 	protected Node findNode(int id) {
 		/* value to store index */
 		int i  = 0;
@@ -298,7 +312,9 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* Calculate parallel resistance */
+	/** Calculate parallel resistance from a list of resistors
+	 * @param ArrayList<Component> resistors
+	 * @return double*/
 	protected double parallelResistors(ArrayList<Component> resistors) {
 		double parallelR = 0.0;
 		if(resistors.size()==0) {
@@ -315,7 +331,7 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* Print circuit Characteristics */
+	/**No parameters or returns, Print circuit Characteristics */
 	protected void printCharacteristics() {
 		System.out.println("Ground voltage is located at Node "+this.ground+".");
 		System.out.println("Total voltage in circuit is: "+this.totalV+ " Volts.");
@@ -325,22 +341,40 @@ public class CircuitAnalysis {
 	
 	/* get methods for testing private instance variables */
 	
+	/** get nodeList, no parameters
+	 * @return ArrayList<Node>
+	 */
 	public ArrayList<Node> getNodeList(){
 		return this.nodeList;
 	}
 	
+	/** gets the list of components, no parameters
+	 * 
+	 * @return ArrayList<Component>
+	 */
 	public ArrayList<Component> getComponents(){
 		return this.components;
 	}
-	
+
+	/** get voltage, no parameters
+	 * @return double
+	 */
 	public double getV() {
 		return this.totalV;
 	}
 	
+	/** gets the resistance of the circuit, no parameters
+	 * 
+	 * @return double
+	 */
 	public double getR() {
 		return this.totalR;
 	}
 	
+	/** gets the ground node id
+	 * 
+	 * @return int
+	 */
 	public int getG() {
 		return this.ground;
 	}
@@ -348,7 +382,7 @@ public class CircuitAnalysis {
 	
 	
 	
-	/* METHOD NO LONGER IN USE - changed algorithm for solving circuit problem - storing it in case it is useful in future */
+	/** METHOD NO LONGER IN USE - changed algorithm for solving circuit problem - storing it in case it is useful in future */
 	/* Reduce multiple serial resistors to a single equivalent resistor */
 	protected void analyzeSerialResistances() {
 		ArrayList<Component> temp = new ArrayList<>();
