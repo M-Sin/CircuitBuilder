@@ -9,8 +9,8 @@ package circuit;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.300
- * @since 16 January 2019.
+ * @version 2.302
+ * @since 27 January 2019.
  */
 public class Resistor extends Component{
     /*Instance variables.*/
@@ -50,16 +50,25 @@ public class Resistor extends Component{
       
     /*Methods.*/
     
-    /* get/set methods */
+    /** get the resistance, no parameters
+     * 
+     * @return double resistance
+     */
     protected double getR() {
     	return this.resistance;
     }
     
-    /* functionality will be added later */
+    /** functionality will be added later, sets current through this resistor, no return
+     * @param double i_c
+     * */
     protected void set_current(double i_c){
     	this.current_through = i_c;
     }
     
+    /** functionality will be added later, gets current through this resistor, no parameters
+     * 
+     * @return double current_through
+     */
     protected double get_current(){
     	return this.current_through;
     }
@@ -71,7 +80,9 @@ public class Resistor extends Component{
         return "R"+this.getId()+" "+this.getNodes()[0]+" "+this.getNodes()[1]+" "+this.resistance+" Ohms";
     }
     
-    /* a toString that does not display the resistor Id */
+    /** method to get specific information about a resistor, a toString() that does not display the resistor Id, used when not wanting to display the id, no parameters
+     * @return String
+     * */
     public String toStringFinal() {
         return "Req "+this.getNodes()[0]+" "+this.getNodes()[1]+" "+this.resistance+" Ohms";
     }

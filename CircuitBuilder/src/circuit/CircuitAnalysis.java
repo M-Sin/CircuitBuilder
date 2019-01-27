@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.301
- * @since 23 January 2019.
+ * @version 2.302
+ * @since 27 January 2019.
 */
 
 public class CircuitAnalysis {

@@ -17,8 +17,8 @@ import java.util.Scanner;
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
  * @author Michael Sinclair.
- * @version 2.301
- * @since 23 January 2019.
+ * @version 2.302
+ * @since 27 January 2019.
 */
 
 public class UserMain {
@@ -31,7 +31,7 @@ public class UserMain {
     /* Need dynamic node list to ensure only one node exists per node id */
     protected static ArrayList<Node> nodeList;
     
-    /* Constructor to initialize instance variables */
+    /** Constructor to initialize instance variables, no parameters */
     protected UserMain(){
         UserMain.user = new Scanner(System.in);
         UserMain.nodeList = new ArrayList<>();    
@@ -67,7 +67,7 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.301 Notes:");
+        System.out.println("V2.302 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors.");

@@ -7,8 +7,8 @@ package circuit;
  * It also contains an inherited Id as well as two connected nodes from the Component class.
  *  
  * @author Michael Sinclair.
- * @version 2.300
- * @since 16 January 2019.
+ * @version 2.302
+ * @since 27 January 2019.
 */
 
 public class Voltage extends Component{
@@ -17,9 +17,9 @@ public class Voltage extends Component{
     protected static int vnum = 1;
     
     /**Constructor checks that voltage is non-zero, sets voltage and attaches two nodes with consistent polarity
-     * @param v.
-     * @param nod1
-     * @param nod2*/
+     * @param double v.
+     * @param Node nod1
+     * @param Node nod2*/
     protected Voltage(double v, Node nod1, Node nod2) {
     	super(nod1,nod2);
         double threshold = 0.00001;
@@ -47,23 +47,30 @@ public class Voltage extends Component{
     
     /*Methods.*/
     
-    /* get/set */
+    /** method to get voltage of voltage source, no parameters
+     * 
+     * @return
+     */
     protected double getV() {
     	return this.voltage;
     }
     
+    /** method to set voltage of voltage source, no return
+     * 
+     * @param double v
+     */
     protected void setV(double v) {
     	this.voltage = v;
     }
     
-    /**Print information about voltage source
+    /**Print information about voltage source, overrides toString()
      * @return String.*/
     @Override
     public String toString(){
         return "V"+this.getId()+" "+this.getNodes()[0]+" "+this.getNodes()[1]+" "+this.voltage+" Volts DC";
     }
     
-    /* required override for resistor subclass, but not needed for voltage sources */
+    /** required override for resistor subclass, but not needed for voltage sources, so simply mimics toString() */
     public String toStringFinal() {
         return "V"+this.getId()+" "+this.getNodes()[0]+" "+this.getNodes()[1]+" "+this.voltage+" Volts DC";
     }

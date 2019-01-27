@@ -12,9 +12,11 @@ import org.junit.Test;
  * 
  * Current test circuit contains: parallel resistors between the same two nodes, parallel resistors between different nodes and serial resistors.
  * 
+ * Useful for testing this level of proven functionality in the program, as I continue to expand on the program.
+ * 
  * @author Michael Sinclair.
- * @version 2.300
- * @since 16 January 2019.
+ * @version 2.302
+ * @since 27 January 2019.
 */
 
 public class calculationTest {

@@ -7,12 +7,12 @@ import java.util.ArrayList;
  * 
  * Decided to compartmentalize this portion of the program to remove large duplicate code blocks and simplify UserMain.
  * 
- * Would likely normally just make this a method within UserMain.
+ * Would likely normally just make this a method within UserMain if resources and time were of concern in this program. Chose to make it a separate class to make program easier to view, for now.
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.300
- * @since 16 January 2019.
+ * @version 2.302
+ * @since 27 January 2019.
 */
 
 public class NodeChecker {
@@ -20,7 +20,13 @@ public class NodeChecker {
 	private Node node1;
 	private Node node2;
 	private ArrayList<Node> nodeList;
-
+	
+	/** constructor for building this class
+	 * 
+	 * @param Node nod1
+	 * @param Node nod2
+	 * @param ArrayList<Node> nodeList
+	 */
 	public NodeChecker(int nod1, int nod2, ArrayList<Node> nodeList){
 		this.nodeList = nodeList;
 		/*Check that component does not have the same nodes on both ends. Note would be part of input validation*/
@@ -65,15 +71,26 @@ public class NodeChecker {
         }
 	}
 	
+	/** get first node to check, no parameters
+	 * 
+	 * @return Node node1
+	 */
 	protected Node getCheckedNode1() {
 		return this.node1;
 	}
 	
+	/** get second node to check, no parameters
+	 * 
+	 * @return Node node2
+	 */
 	protected Node getCheckedNode2() {
 		return this.node2;
 	}
 	
-	/* method to find index for node 1 or node 2 */
+	/** method to find index for node 1 or node 2, depending on whether it is called with i = 1 or i = 2 (only two values that will do anything in this method as a component can only have 2 nodes)
+	 * @param int i
+	 * @return index1 or index2
+	 * */
 	protected int findIndex(int i) {
         if (i == 1) {
 			int index1 = 0;
