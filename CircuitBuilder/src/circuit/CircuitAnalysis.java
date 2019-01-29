@@ -13,7 +13,7 @@ import java.util.Collections;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.303
+ * @version 2.304
  * @since 29 January 2019.
 */
 
@@ -148,6 +148,7 @@ public class CircuitAnalysis {
 		ArrayList<Component> toRemove = new ArrayList<>();
 		ArrayList<Component> toConnect = new ArrayList<>();
 		/* for each node */
+		/* TODO explore possibility that only one for loop is needed for the nodeList - and simply compare second node */
 		for (int n = 0; n<nodeList.size();n++) {
 			/* find components connected to each other node */
 			for (int m = 0; m<nodeList.size();m++) {
