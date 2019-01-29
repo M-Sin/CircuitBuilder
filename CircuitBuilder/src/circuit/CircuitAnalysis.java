@@ -1,5 +1,6 @@
 package circuit;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /** Assistant class to calculate circuit characteristics.
  * 
@@ -12,8 +13,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.302
- * @since 27 January 2019.
+ * @version 2.303
+ * @since 29 January 2019.
 */
 
 public class CircuitAnalysis {
@@ -65,6 +66,17 @@ public class CircuitAnalysis {
 				}
 			}
 		}
+    	
+		/* sort the resistor nodes of the copies, maintain the ordering for the original list that the user input for their resistors */
+    	/* sort the ArrayList of components by node 1 and node 2 (smaller of both first) - note that by construction, voltages will always have ordered nodes */
+    	for (int j = 0; j<components.size();j++) {
+        	for (int i = 0; i<components.size()-1;i++) {
+        		if (components.get(i).compare(components.get(i+1))>0) {
+        			/* if component nodes are disordered, swap them */
+        			Collections.swap(components, i, i+1);
+        		}
+        	}
+    	}
 	}
 
 	

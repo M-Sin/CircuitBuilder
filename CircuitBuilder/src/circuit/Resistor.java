@@ -9,8 +9,8 @@ package circuit;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.302
- * @since 27 January 2019.
+ * @version 2.303
+ * @since 29 January 2019.
  */
 public class Resistor extends Component{
     /*Instance variables.*/
@@ -39,13 +39,6 @@ public class Resistor extends Component{
         this.setId(Resistor.resnum);
         Resistor.resnum++;
         this.current_through=0.0;
-        
-        /* required ordered nodes for calculations */
-        if (this.nodal1.getId()>this.nodal2.getId()){   
-            Node temp = this.getNode1();          
-            this.nodal1 = this.nodal2;         
-            this.nodal2 = temp;                 
-        }
     }
       
     /*Methods.*/
