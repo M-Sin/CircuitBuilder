@@ -7,8 +7,8 @@ package circuit;
  * It also contains an inherited Id as well as two connected nodes from the Component class.
  *  
  * @author Michael Sinclair.
- * @version 2.302
- * @since 27 January 2019.
+ * @version 2.305
+ * @since 2 February 2019.
 */
 
 public class Voltage extends Component{
@@ -20,7 +20,7 @@ public class Voltage extends Component{
      * @param double v.
      * @param Node nod1
      * @param Node nod2*/
-    protected Voltage(double v, Node nod1, Node nod2) {
+    public Voltage(double v, Node nod1, Node nod2) {
     	super(nod1,nod2);
         double threshold = 0.00001;
         /*Check that voltage is non-zero.*/

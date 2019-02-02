@@ -1,6 +1,5 @@
 package circuit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
   
 /**
@@ -17,8 +16,8 @@ import java.util.Scanner;
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
  * @author Michael Sinclair.
- * @version 2.303
- * @since 29 January 2019.
+ * @version 2.305
+ * @since 2 February 2019.
 */
 
 public class UserMain {
@@ -53,7 +52,7 @@ public class UserMain {
         System.out.println("Input 'display' to display components currently in the circuit.");
         System.out.println("Input 'calculate' to determine total resistance and current in circuit.");
         System.out.println("Input 'end' to end the program.");
-        System.out.println("");
+        System.out.println();
         System.out.println("Input resistors (R) and voltage sources (V) into the circuit by the following syntax:");
         System.out.println("R/V X Y Z");
         System.out.println("R indicates a resistor and V indicates a voltage source.");
@@ -296,9 +295,9 @@ public class UserMain {
             	input = UserMain.user.nextLine();
             	/* store input */
             	char[] question = null;
-            	/* initialize Letter with a dummy value */
-            	char Letter = '\0';
-            	String Number = "";
+            	/* initialize letter with a dummy value */
+            	char letter = '\0';
+            	String number = "";
             	/* test user input */
             	while(true) {
 	            	try {
@@ -309,25 +308,25 @@ public class UserMain {
 	            			/* instruct user on error and to retry */
 	            			throw new IllegalArgumentException("Select a resistor with 'R' or a voltage with 'V'.");
 	            		}
-	            		Letter = question[0];
+	            		letter = question[0];
 	            		/* find the Id of the requested value */
 	            		for (int j = 1; j<question.length;j++){
-	            			Number += question[j];
+	            			number += question[j];
 	            		}
 	            		/* if not an integer, this will throw a NumberFormatException */
-	            		Integer.parseInt(Number);
+	            		Integer.parseInt(number);
 	            		/* if a voltage or resistor are not selected */
-	            		if(Letter!='r') {
-	            			if(Letter!='R') {
-	            				if(Letter!='v') {
-	            					if(Letter!='V') {
+	            		if(letter!='r') {
+	            			if(letter!='R') {
+	            				if(letter!='v') {
+	            					if(letter!='V') {
 	            						throw new IllegalArgumentException("Select a resistor with 'R' or a voltage with 'V'.");
 	            					}
 	            				}
 	            			}
 	            		}
-	            		/* if the Number string does not contain at least one character */
-	            		if(Number.length()<1) {
+	            		/* if the number string does not contain at least one character */
+	            		if(number.length()<1) {
 	            			throw new IllegalArgumentException("Must enter the unique Id of the component you wish to remove.");
 	            		}
 	            		/* if no exceptions are thrown */
@@ -336,21 +335,21 @@ public class UserMain {
 	            		/* instruct user on error and to retry */
 	            		System.out.println(e);
 	            		System.out.println("Invalid input. Enter only the Letter (R or V) and the number of the component you wish to remove. Try again:");
-	            		/* clear the Number string or else previous values will still be held within the string */
-	            		Number = "";
+	            		/* clear the number string or else previous values will still be held within the string */
+	            		number = "";
 	            	    input = UserMain.user.nextLine();
 	            	} catch (ArrayIndexOutOfBoundsException e) {
 	            		/* instruct user on error and to retry */
 	            		System.out.println(e);
 	            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
-	            		/* clear the Number string or else previous values will still be held within the string */
-	            		Number = "";
+	            		/* clear the number string or else previous values will still be held within the string */
+	            		number = "";
 	            	    input = UserMain.user.nextLine();
 	            	}
             	}
                 
                 /* if resistor requested */
-                if (Letter == 'r' || Letter == 'R') {
+                if (letter == 'r' || letter == 'R') {
                 	boolean flag = false;
                 	Resistor Check=null;
                 	/*check if it is in the list */
@@ -358,7 +357,7 @@ public class UserMain {
                 		/* if that component is a resistor */
                 		if(cir.getComponents().get(i) instanceof Resistor){
                 			Check = (Resistor)cir.getComponents().get(i);
-                			if (Check.getId() == Integer.parseInt(Number)){
+                			if (Check.getId() == Integer.parseInt(number)){
                 				/* if it is a resistor and in the list, remove it */
                 				cir.getComponents().get(i).getNode1().disconnect(cir.getComponents().get(i));
                 				cir.getComponents().get(i).getNode2().disconnect(cir.getComponents().get(i));
@@ -377,7 +376,7 @@ public class UserMain {
                }
                 
                 /* if voltage requested */
-                else if (Letter == 'v' || Letter == 'V') {
+                else if (letter == 'v' || letter == 'V') {
                 	boolean flag = false;
                 	Voltage Check=null;
                 	/*check if it is in the list */
@@ -385,7 +384,7 @@ public class UserMain {
                 		/* if that component is a voltage */
                 		if(cir.getComponents().get(i) instanceof Voltage){
                 			Check = (Voltage)cir.getComponents().get(i);
-                			if (Check.getId() == Integer.parseInt(Number)){
+                			if (Check.getId() == Integer.parseInt(number)){
                 				/* if it is a voltage and in the list, remove it */
                 				cir.getComponents().get(i).getNode1().disconnect(cir.getComponents().get(i));
                 				cir.getComponents().get(i).getNode2().disconnect(cir.getComponents().get(i));

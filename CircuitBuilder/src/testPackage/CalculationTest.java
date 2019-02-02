@@ -1,4 +1,4 @@
-package circuit;
+package testPackage;
 
 import static org.junit.Assert.*;
 import java.util.ArrayList;
@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import circuit.CircuitAnalysis;
+import circuit.Component;
+import circuit.Node;
+import circuit.Resistor;
+import circuit.Voltage;
 
 /**
  * A test package that builds a custom circuit and compares the calculated values with expected values.
@@ -15,11 +21,11 @@ import org.junit.Test;
  * Useful for testing this level of proven functionality in the program, as I continue to expand on the program.
  * 
  * @author Michael Sinclair.
- * @version 2.302
- * @since 27 January 2019.
+ * @version 2.305
+ * @since 2 February 2019.
 */
 
-public class calculationTest {
+public class CalculationTest {
 	
 	/* JUnit requires static variables */
 	public static ArrayList<Component> testComps;

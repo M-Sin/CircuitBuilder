@@ -9,8 +9,8 @@ package circuit;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.303
- * @since 29 January 2019.
+ * @version 2.305
+ * @since 2 February 2019.
  */
 public class Resistor extends Component{
     /*Instance variables.*/
@@ -23,7 +23,7 @@ public class Resistor extends Component{
      * @param res.
      * @param nod1
      * @param nod2*/
-    protected Resistor(double res, Node nod1, Node nod2) {
+    public Resistor(double res, Node nod1, Node nod2) {
     	super(nod1,nod2);
         double threshold = 0.00001;
         /*Ensure resistor is greater than 0, and not negative.*/

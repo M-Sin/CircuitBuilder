@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.302
- * @since 27 January 2019.
+ * @version 2.305
+ * @since 2 February 2019.
 */
 
 public class Node {
@@ -21,7 +21,7 @@ public class Node {
     
     /**Assign an id to this node.
      * @param nodal_id.*/
-    protected Node(int nodalId) {
+    public Node(int nodalId) {
         this.id = nodalId;
         this.voltageAt = 0.0;
         this.attachments = new ArrayList<>();

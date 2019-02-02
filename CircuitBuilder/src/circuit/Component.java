@@ -7,8 +7,8 @@ package circuit;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.302
- * @since 27 January 2019.
+ * @version 2.305
+ * @since 2 February 2019.
 */
 
 public abstract class Component {
@@ -21,7 +21,7 @@ public abstract class Component {
      * @param Node node1
      * @param Node node2
     */
-    protected Component(Node node1, Node node2){
+    public Component(Node node1, Node node2){
     	this.nodal1 = node1;
     	this.nodal2 = node2;
     }
@@ -104,10 +104,7 @@ public abstract class Component {
      * @return boolean
      * */
     protected boolean equals(Component other) {
-    	if (this.getId() == other.getId()) {
-    		return true;
-    	}
-    	else return false;
+    	return this.getId() == other.getId();
     }
     
     /** define compare method for sorting

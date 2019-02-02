@@ -13,8 +13,8 @@ import java.util.Collections;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.304
- * @since 29 January 2019.
+ * @version 2.305
+ * @since 2 February 2019.
 */
 
 public class CircuitAnalysis {
@@ -35,7 +35,7 @@ public class CircuitAnalysis {
 	 * @param ArrayList<Component> comps
 	 * @param ArrayList<Node> nodes
 	 */
-	protected CircuitAnalysis(int ground, ArrayList<Component> comps, ArrayList<Node> nodes) {
+	public CircuitAnalysis(int ground, ArrayList<Component> comps, ArrayList<Node> nodes) {
 		/* initialize variables */
 		this.ground = ground;
 		this.totalR = 0.0;
@@ -83,7 +83,7 @@ public class CircuitAnalysis {
 	/* methods */
 	
 	/** No parameters or returns, automates circuit measurements by calling analyzeVoltage(),analyzeResistance(),printCharactersitics() and reduces resistor count for resistors created for circuit calculations */
-	protected void analyzeCircuit() {
+	public void analyzeCircuit() {
 		/* find total voltage and count voltage sources */
 		this.analyzeVoltage();
 		/* find total resistance of the circuit */
@@ -176,9 +176,7 @@ public class CircuitAnalysis {
 							/* queue it for connection */
 							toConnect.add(equivalent);
 							/* queue resistors that need to be removed */
-							for(Component remove:temp) {
-								toRemove.add(remove);
-							}
+							toRemove.addAll(temp);
 						}
 						/* clear the list for future calculations */
 						temp.clear();
