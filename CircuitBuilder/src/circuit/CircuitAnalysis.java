@@ -382,7 +382,7 @@ public class CircuitAnalysis {
 	/* get methods for testing private instance variables */
 	
 	/** get nodeList
-	 * @return ArrayList<Node>
+	 * @return ArrayList<Node> nodeList
 	 */
 	public ArrayList<Node> getNodeList(){
 		return nodeList;
@@ -390,14 +390,14 @@ public class CircuitAnalysis {
 	
 	/** gets the list of components
 	 * 
-	 * @return ArrayList<Component>
+	 * @return ArrayList<Component> components
 	 */
 	public ArrayList<Component> getComponents(){
 		return components;
 	}
 
 	/** get voltage
-	 * @return double
+	 * @return double totalV
 	 */
 	public double getV() {
 		return totalV;
@@ -405,7 +405,7 @@ public class CircuitAnalysis {
 	
 	/** gets the resistance of the circuit
 	 * 
-	 * @return double
+	 * @return double totalR
 	 */
 	public double getR() {
 		return totalR;
@@ -413,7 +413,7 @@ public class CircuitAnalysis {
 	
 	/** gets the ground node id
 	 * 
-	 * @return int
+	 * @return int ground
 	 */
 	public int getG() {
 		return ground;
