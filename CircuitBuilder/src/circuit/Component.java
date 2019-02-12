@@ -1,4 +1,5 @@
 package circuit;
+import java.util.ArrayList;
 
 /**
  * An abstract class to quantify common elements to components within the circuit. 
@@ -7,75 +8,94 @@ package circuit;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.305
- * @since 2 February 2019.
-*/
+ * @version 2.400
+ * @since 12 February 2019.
+ */
 
-public abstract class Component {
+public abstract class Component implements Comparable<Component>{
     /*Instance variables.*/
     protected Node nodal1;
     protected Node nodal2;
     protected int id;
+    /* functionality will be added later */
+    protected double currentThrough;
     
     /** Superclass constructor 
      * @param Node node1
      * @param Node node2
     */
     public Component(Node node1, Node node2){
-    	this.nodal1 = node1;
-    	this.nodal2 = node2;
+    	nodal1 = node1;
+    	nodal2 = node2;
+    	currentThrough = 0.0;
     }
     
     /*Methods */
     
     /*get/set methods*/
     
-    /** get first node, no parameters
+    /** get first node
      * 
      * @return Node nodal1
      */
-    protected Node getNode1() {
-    	return this.nodal1;
+    public Node getNode1() {
+    	return nodal1;
     }
     
-    /** get second node, no parameters
+    /** get second node
      * 
      * @return Node nodal2
      */
-    protected Node getNode2() {
-    	return this.nodal2;
+    public Node getNode2() {
+    	return nodal2;
     }
     
-    /** set first node, no return
+    /** set first node
      * 
      * @param Node node1
      */
-    protected void setNode1(Node node1) {
-    	this.nodal1 = node1;
+    public void setNode1(Node node1) {
+    	nodal1 = node1;
     }
     
-    /** set second node, no return
+    /** set second node
      * 
      * @param Node node2
      */
-    protected void setNode2(Node node2) {
-    	this.nodal2 = node2;
+    public void setNode2(Node node2) {
+    	nodal2 = node2;
     }
     
-    /** get component id, no parameters
+    /** get component id
      * 
      * @return int id
      */
-    protected int getId() {
-    	return this.id;
+    public int getId() {
+    	return id;
     }
     
-    /** set component id, no return
+    /** set component id
      * 
      * @param int i
      */
-    protected void setId(int i) {
-    	this.id = i;
+    public void setId(int i) {
+    	id = i;
+    }
+   
+    
+    /** functionality will be added later, sets current through this component
+     * @param double iC
+     * */
+    public void setCurrent(double iC){
+    	currentThrough = iC;
+    }
+    
+    /** functionality will be added later, gets current through this component
+     * 
+     * @return double current_through
+     */
+    public double getCurrent(){
+    	return currentThrough;
     }
     
     /** method for testing if connected through only 1 node for use in nodal analysis , returns true if components are connected through the first node and not the second
@@ -84,27 +104,35 @@ public abstract class Component {
      * @return boolean
      * */
     protected boolean testNode(Component other) {
-    	if (this.nodal1 == other.nodal1) {
-    		if (this.nodal2 != other.nodal1) {
+    	if (nodal1 == other.nodal1) {
+    		if (nodal2 != other.nodal1) {
     			return true;
     		}
     	}
 		return false;
     }
     
-    /**Return list of nodes connected to voltage source, no parameters
+    /**Return list of nodes connected to voltage source
      * @return Node[] list.
      * */
-    protected Node[] getNodes(){
-        return new Node[] {this.nodal1 , this.nodal2};
+    protected ArrayList<Node> getNodes(){
+    	ArrayList<Node> retList = new ArrayList<Node>();
+    	retList.add(nodal1);
+    	retList.add(nodal2);
+        return retList;
     }
     
-    /** define equals method, returns true if Ids are the same otherwise false
+    /** Override equals method, returns true if Ids are the same otherwise false
      * @param Component other
      * @return boolean
      * */
-    protected boolean equals(Component other) {
-    	return this.getId() == other.getId();
+    @Override
+    public boolean equals(Object other) {
+    	if (other instanceof Component) {
+    		Component testEqual = (Component) other;
+        	return getClass() == testEqual.getClass() && getId() == testEqual.getId();
+    	}
+    	return false;
     }
     
     /** define compare method for sorting
@@ -114,14 +142,17 @@ public abstract class Component {
     * @param Component other
     * @return int
     * */
-    protected int compare(Component other) {
-    	if (this.getNode1().getId() == other.getNode1().getId()) {
-    		return this.getNode2().getId()-other.getNode2().getId();
+    @Override
+    public int compareTo(Component other) {
+    	int result = getNode1().compareTo(other.getNode1());
+    	if (result == 0) {
+    	    result = getNode2().compareTo(other.getNode2());
     	}
-    	else {
-    		return this.getNode1().getId()-other.getNode1().getId();
-    	}
+    	return result;
     }
+    
+    /** get specific component type for toString() */
+    public abstract String myClass();
     
     
     /** make components override toString() 
@@ -129,9 +160,5 @@ public abstract class Component {
      */
     @Override
     public abstract String toString();
-    
-    /** desire a toString that displays different information 
-     * @return String
-     * */
-    public abstract String toStringFinal();
+
 }

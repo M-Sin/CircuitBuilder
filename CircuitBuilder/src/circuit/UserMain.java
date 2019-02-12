@@ -16,34 +16,24 @@ import java.util.Scanner;
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
  * @author Michael Sinclair.
- * @version 2.305
- * @since 2 February 2019.
-*/
+ * @version 2.400
+ * @since 12 February 2019.
+ */
 
+/*
+ * TODO Investigate better way to validate inputs than exception handling. Consolidate exception catches.
+ */
 public class UserMain {
-    
-    /*Instance variables.*/
-    
-    /* Need to take input from user */
-    protected static Scanner user;
-    
-    /* Need dynamic node list to ensure only one node exists per node id */
-    protected static ArrayList<Node> nodeList;
-    
-    /** Constructor to initialize instance variables, no parameters */
-    protected UserMain(){
-        UserMain.user = new Scanner(System.in);
-        UserMain.nodeList = new ArrayList<>();    
-    }
+
     /**Main method that interacts with user
-     * @param args.
-     * */
+     * @param String[] args.
+     */
 	public static void main(String[] args){
         
         /* Create objects in main */
         Circuit cir = Circuit.getInstance();
-        @SuppressWarnings("unused")
-		UserMain instance = new UserMain();
+        Scanner user = new Scanner(System.in);
+        ArrayList<Node> nodeList = new ArrayList<>();
         
         /*Instruct user on  how to use program.*/
         System.out.println("Welcome to the circuit builder program.");
@@ -66,19 +56,20 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.303 Notes:");
+        System.out.println("V2.400 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors.");
         System.out.println("Currently it is the user's responsibility to enter a complete circuit.");
         System.out.println("");
+        System.out.println("Enter a command.");
         
         /* Request user input with input verification */
         String input = null;
         while(true) {
 			try {
 				/* test inputs */
-				input = UserMain.user.nextLine();
+				input = user.nextLine();
 				if(input.equals("add")) {
 					break;
 				}
@@ -111,7 +102,8 @@ public class UserMain {
         		 
         		 /* request details with input verification */
         		System.out.println("Add a resistor or a voltage.");
-    			input = UserMain.user.nextLine();
+    			input = user.nextLine();
+
         		while(true){
 	        			try {
 	        			String[] testCase = input.split(" ");
@@ -126,7 +118,7 @@ public class UserMain {
 	    				/* instruct user on error and to retry */
 	        			System.out.println(e);
 	        			System.out.println("Try again:");
-	            	    input = UserMain.user.nextLine();
+	            	    input = user.nextLine();
 	        		}
         		}
         		
@@ -135,7 +127,7 @@ public class UserMain {
 	            	int firstNode = 0;
 	            	int secondNode=0;
 	            	double rVal=0.0;
-	            	
+
 	                /* Split input into various fields with input validation */
 	            	while(true) {
 		            	try {
@@ -172,45 +164,38 @@ public class UserMain {
 		    				/* instruct user on error and to retry */
 		            		System.out.println(e);
 		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
-		            	    input = UserMain.user.nextLine();
+		            	    input = user.nextLine();
 		            	} catch(IllegalArgumentException e) {
 		    				/* instruct user on error and to retry */
 		            		System.out.println(e);
 		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
-		            	    input = UserMain.user.nextLine();
+		            	    input = user.nextLine();
 		            	} catch (ArrayIndexOutOfBoundsException e) {
 		    				/* instruct user on error and to retry */
 		            		System.out.println(e);
 		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
-		            	    input = UserMain.user.nextLine();
+		            	    input = user.nextLine();
 		            	}
 	            	}
 	            	
 	                /* create nodes if they do not already exist*/
-	                NodeChecker evaluate = new NodeChecker(firstNode,secondNode,nodeList);
-	                @SuppressWarnings("unused")
-					Node node1 = evaluate.getCheckedNode1();
-	                @SuppressWarnings("unused")
-	                Node node2 = evaluate.getCheckedNode2();
-	                
-	                /*Find list index now that the node is definitely in the array.*/
-	                int index1 = evaluate.findIndex(1);
-	                int index2 = evaluate.findIndex(2);
+	            	Node node1 = findOrCreate(firstNode, nodeList);
+	            	Node node2 = findOrCreate(secondNode, nodeList);
 	
-	                /*Create add resistor to circuit.*/
-	                Resistor res = new Resistor(rVal,nodeList.get(index1),nodeList.get(index2));
-	                cir.addComponent(res);
-	                /* track connections through nodes */
-	                nodeList.get(index1).connect(res);
-	                nodeList.get(index2).connect(res);
+	            	/*Create and add resistor to circuit.*/
+	            	Resistor resistor = new Resistor(rVal, node1, node2);
+	                cir.addComponent(resistor);
+	            	/* track node connections */
+	            	node1.connect(resistor);
+	            	node2.connect(resistor);
 	                
-	                System.out.println("Added Resistor: "+res.toString());
+	                System.out.println("Added Resistor: "+resistor.toString());
 	                
 	            }
 	            
 	            /* If voltage source is being added */
 	            else if ((input.charAt(0) == 'v'||input.charAt(0) == 'V')&&input.charAt(1)==' '){
-	            	int firstNode = 0;
+	            	int firstNode=0;
 	            	int secondNode=0;
 	            	double vVal=0.0;
 	            	
@@ -246,45 +231,38 @@ public class UserMain {
 		            		/* instruct user on error and to retry */
 		            		System.out.println(e);
 		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
-		            	    input = UserMain.user.nextLine();
+		            	    input = user.nextLine();
 		            	} catch(IllegalArgumentException e) {
 		            		/* instruct user on error and to retry */
 		            		System.out.println(e);
 		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
-		            	    input = UserMain.user.nextLine();
+		            	    input = user.nextLine();
 		            	} catch (ArrayIndexOutOfBoundsException e) {
 		            		/* instruct user on error and to retry */
 		            		System.out.println(e);
 		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
-		            	    input = UserMain.user.nextLine();
+		            	    input = user.nextLine();
 		            	}
 	            	}
 	                
 	                /* create nodes if they do not already exist*/
-	                NodeChecker evaluate = new NodeChecker(firstNode,secondNode,nodeList);
-	                @SuppressWarnings("unused")
-					Node node1 = evaluate.getCheckedNode1();
-	                @SuppressWarnings("unused")
-	                Node node2 = evaluate.getCheckedNode2();
+	            	Node node1 = findOrCreate(firstNode, nodeList);
+	            	Node node2 = findOrCreate(secondNode, nodeList);
+	
+	            	/*Create and add resistor to circuit.*/
+	            	Voltage voltage = new Voltage(vVal, node1, node2);
+	                cir.addComponent(voltage);
+	            	/* track node connections */
+	            	node1.connect(voltage);
+	            	node2.connect(voltage);
 	                
-	                /*Find list index now that the node is definitely in the array.*/
-	                int index1 = evaluate.findIndex(1);
-	                int index2 = evaluate.findIndex(2);
-	                
-	                /*Create and add voltage source to circuit.*/
-	                Voltage vol = new Voltage(vVal,nodeList.get(index1),nodeList.get(index2));
-	                cir.addComponent(vol);
-	                /* track connections through nodes */
-	                nodeList.get(index1).connect(vol);
-	                nodeList.get(index2).connect(vol);
-	                
-	                System.out.println("Voltage added: "+vol.toString());
+	                System.out.println("Voltage added: "+voltage.toString());
 	                
 	            }
 	            /* catch other bad inputs */
 	            else {
 	            	System.out.println("Invalid input. Enter a voltage source or resistor with the following syntax R/V X Y Z. Try again:");
-	            	input = UserMain.user.nextLine();
+	            	input = user.nextLine();
 	            }
         	 }
 	            
@@ -292,7 +270,7 @@ public class UserMain {
             else if ("edit".equals(input)){
             	System.out.println("Which component would you like to remove? Enter only the unique identifier with no spaces (Ex. R1 or V2):");
                 /* store values */
-            	input = UserMain.user.nextLine();
+            	input = user.nextLine();
             	/* store input */
             	char[] question = null;
             	/* initialize letter with a dummy value */
@@ -337,14 +315,14 @@ public class UserMain {
 	            		System.out.println("Invalid input. Enter only the Letter (R or V) and the number of the component you wish to remove. Try again:");
 	            		/* clear the number string or else previous values will still be held within the string */
 	            		number = "";
-	            	    input = UserMain.user.nextLine();
+	            	    input = user.nextLine();
 	            	} catch (ArrayIndexOutOfBoundsException e) {
 	            		/* instruct user on error and to retry */
 	            		System.out.println(e);
 	            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
 	            		/* clear the number string or else previous values will still be held within the string */
 	            		number = "";
-	            	    input = UserMain.user.nextLine();
+	            	    input = user.nextLine();
 	            	}
             	}
                 
@@ -426,7 +404,7 @@ public class UserMain {
 	            	/* get ground voltage */
                     System.out.println("");
 	            	System.out.println("Where is the ground voltage? Enter the unique node ID number only.");
-	                input = UserMain.user.nextLine();
+	                input = user.nextLine();
 	                /* input verification - ground functionality to be added later */
 	                int ground;
 	                while(true) {
@@ -435,7 +413,7 @@ public class UserMain {
 		                	break;
 		            	} catch (NumberFormatException e) {
 		            		System.out.println("Invalid input. Enter only the node ID (an integer value):");
-		            	    input = UserMain.user.nextLine();
+		            	    input = user.nextLine();
 		            	}
 	                }
 
@@ -456,7 +434,7 @@ public class UserMain {
 	            	Calculate = null;
 	            	/* instruct user to continue altering circuit */
 	            	System.out.println("");
-	            	System.out.println("You may continue to operate on the circuit. Enter a new input command.");
+	            	System.out.println("You may continue to operate on the circuit.");
 
             	}
             	/* if no components in the circuit - needed to avoid trying to operate on an empty circuit (empty array) */
@@ -470,20 +448,28 @@ public class UserMain {
                 System.out.println("Invalid input. Enter a valid command as specified in the instructions.");
             }
         /*Request next instruction.*/
-        input = UserMain.user.nextLine();
+        System.out.println("Enter next command.");
+        input = user.nextLine();
         }
          
-    /* Below shows that if two components are connected to the same node, 
-     * they are in fact connected to exactly the same node (object) and not 
-     * just nodes with the same id. In other words, nodes 
-     * only exist as single objects.*/
-    
-    /*System.out.println("Printing node list to show no duplicate nodes exist.");
-    for (Node node : nodeList){
-        System.out.println(node.toString());
-    }*/
-         
     /*Program end.*/     
-    System.out.println("All Done");
+    System.out.println("Circuit Builder has ended.");
+    /* close scanner to avoid resource leaks */
+    user.close();
+    }
+	
+    /** Method to ensure duplicate nodes are not created and that components are attached to the same node objects 
+     * @param int nodeId
+     * @param ArrayList<Node> nodeList
+     * @return Node*/
+    public static Node findOrCreate(int nodeId, ArrayList<Node> nodeList) {
+        for(Node node : nodeList) {
+            if (node.getId() == nodeId)
+                return node;
+        }
+
+        Node newNode = new Node(nodeId);
+        nodeList.add(newNode);
+        return newNode;
     }
 }

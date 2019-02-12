@@ -21,9 +21,9 @@ import circuit.Voltage;
  * Useful for testing this level of proven functionality in the program, as I continue to expand on the program.
  * 
  * @author Michael Sinclair.
- * @version 2.305
- * @since 2 February 2019.
-*/
+ * @version 2.400
+ * @since 12 February 2019.
+ */
 
 public class CalculationTest {
 	
@@ -57,7 +57,7 @@ public class CalculationTest {
 		/* resistor 60 Ohms between nodes 4 and 5 */
 		testComps.add(new Resistor(60.0,testNodes.get(4),testNodes.get(5)));
 		/* resistor 70 Ohms between nodes 5 and 0 - note that UserMain sorts resistor nodes from smaller to larger when passing the ArrayList into circuit analysis within the calculate command */
-		testComps.add(new Resistor(70.0,testNodes.get(0),testNodes.get(5)));
+		testComps.add(new Resistor(70.0,testNodes.get(5),testNodes.get(0)));
 		/* ensure the lists contain the right amount of nodes */
 		assertEquals(8,testComps.size());
 		assertEquals(6,testNodes.size());

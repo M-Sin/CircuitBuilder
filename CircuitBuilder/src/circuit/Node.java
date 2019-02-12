@@ -2,19 +2,19 @@ package circuit;
 import java.util.ArrayList;
 
 /**
-* A node class, to connect circuit components.
+ * A node class, to connect circuit components.
  * 
  * Contains an id that describes the node, as well as the voltage at the node (to be added), the current leaving the node (to be added) and an array list of components attached to the node.
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.305
- * @since 2 February 2019.
-*/
+ * @version 2.400
+ * @since 12 February 2019.
+ */
 
-public class Node {
+public class Node implements Comparable<Node>{
 	/*Instance variables*/
-    private int id;
+    private final int id;
     private double voltageAt;
     private ArrayList<Component> attachments;
     private double currentLeaving;
@@ -22,97 +22,107 @@ public class Node {
     /**Assign an id to this node.
      * @param nodal_id.*/
     public Node(int nodalId) {
-        this.id = nodalId;
-        this.voltageAt = 0.0;
-        this.attachments = new ArrayList<>();
-        this.currentLeaving = 0.0;
+        id = nodalId;
+        voltageAt = 0.0;
+        attachments = new ArrayList<>();
+        currentLeaving = 0.0;
     }
     
     /*Methods*/
     
-    /**get id, no parameters
+    /**get id
      * @return int id
      * */
     protected int getId(){
-    	return this.id;
+    	return id;
     }
    
-    /** set voltage at Node, no return
+    /** set voltage at Node
      * @param double volts
      * */
     protected void setVoltage(double volts) {
-    	this.voltageAt = volts;
+    	voltageAt = volts;
     }
     
     
-    /** get voltage at Node, no parameters
+    /** get voltage at Node
      * @return double voltageAt
      * */
     protected double getVoltage() {
-    	return this.voltageAt;
+    	return voltageAt;
     }
     
-    /** set current leaving Node, no return
+    /** set current leaving Node
      * @param double current
      * */
     protected void setCurrent(double current) {
-    	this.currentLeaving = current;
+    	currentLeaving = current;
     }
     
-    /** get current leaving Node, no parameters
+    /** get current leaving Node
      * @return double currentLeaving
      * */
     protected double getCurrent() {
-    	return this.currentLeaving;
+    	return currentLeaving;
     }
     
-    /** connection a component to this node, methods for tracking component connections, no return
+    /** connection a component to this node, methods for tracking component connections
      * @param Component component
      * */
     protected void connect(Component component) {
-    	this.attachments.add(component);
+    	attachments.add(component);
     }
     
-    /** disconnect a component from this node, methods for tracking component connections, no return
+    /** disconnect a component from this node, methods for tracking component connections
      * 
      * @param Component component
      */
     protected void disconnect(Component component) {
-    	this.attachments.remove(component);
+    	attachments.remove(component);
     }
     
-    /** get the list of attachments that are attached to this node, no parameters
+    /** get the list of attachments that are attached to this node
      * 
      * @return ArrayList<Component> attachments
      */
     protected ArrayList<Component> getAttachments(){
-    	return this.attachments;
+    	return attachments;
     }   
     
-    /**Display node id, overrides toString(), no parameters
+    
+    /**Display node id, overrides toString()
      * @return String.*/
     @Override
     public String toString() {
-        return ""+this.id;
+    	/* use Integer.toString() to directly return string representation of id 
+    	 * reduces overhead as otherwise writing +id would call Integer.toString() anyway to create a string representation, 
+    	 * concatenate that string with the empty string that would need to be present by typing ""+, thus creating a third string
+    	 */
+        return Integer.toString(id);
     }
     
-    /** method for displaying specific information about this node, no parameters
-     * 
-     * @return String
-     */
-    public String toStringSpecific() {
-    	return "Node"+this.id+" Current Leaving: "+this.currentLeaving+" Amps and Voltage at node:" + this.voltageAt+" Volts.";
+    /** Override compareTo() to compare two nodes 
+     * returns 0 if they are equal
+     * returns a positive integer if this node Id is greater than the one being compared to it
+     * returns a negative integer if this node Id is less than the one being compared to it
+     * @param Object other*/
+    @Override
+    public int compareTo(Node other) {
+    	/* use Integer.compare() to prevent possible errors from overflow due to subtraction */
+    	return Integer.compare(getId(), other.getId());
     }
     
-    /** method for displaying the attachments connected to this node, mainly used for debugging, no parameters, displays a string version of the list of attachments
+    /** method for displaying the attachments connected to this node, mainly used for debugging, displays a string version of the list of attachments
      * 
      * @return String
      */
     public String toStringAttachments() {
-    	String str = "Node"+this.id;
+    	/* use StringBuilder and Integer.toString() to reduce overhead of operating on strings
+    	 */
+    	StringBuilder sb = new StringBuilder("Node"+Integer.toString(id));
     	for(int i=0;i<attachments.size();i++) {
-    		str+=" "+attachments.get(i).toString();
+    		sb.append(attachments.get(i).toString());
     	}
-    	return str;
+    	return sb.toString();
     }
 }
