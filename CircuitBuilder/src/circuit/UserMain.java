@@ -16,12 +16,12 @@ import java.util.Scanner;
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
  * @author Michael Sinclair.
- * @version 2.400
- * @since 12 February 2019.
+ * @version 2.401
+ * @since 13 February 2019.
  */
 
 /*
- * TODO Investigate better way to validate inputs than exception handling. Consolidate exception catches.
+ * TODO Investigate better way to validate inputs than exception handling.
  */
 public class UserMain {
 
@@ -56,7 +56,7 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.400 Notes:");
+        System.out.println("V2.401 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors.");
@@ -159,18 +159,8 @@ public class UserMain {
 			                }
 			                /* only reached if no exceptions are thrown */
 			                break;
-			            /* note could just catch all exceptions since the retry message is the same, but that is bad practice */
-		            	} catch (NumberFormatException e) {
-		    				/* instruct user on error and to retry */
-		            		System.out.println(e);
-		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
-		            	    input = user.nextLine();
-		            	} catch(IllegalArgumentException e) {
-		    				/* instruct user on error and to retry */
-		            		System.out.println(e);
-		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
-		            	    input = user.nextLine();
-		            	} catch (ArrayIndexOutOfBoundsException e) {
+			            /* note could just catch all exceptions since the retry message is the same, but that is bad practice - NumberFormatException is caught by IllegalArgumentException so is not needed inside catch condition*/
+		            	} catch ( IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
 		    				/* instruct user on error and to retry */
 		            		System.out.println(e);
 		            		System.out.println("Invalid input. Resistor syntax is R X Y Z. Input a resistor:");
@@ -226,18 +216,8 @@ public class UserMain {
 			                }
 			                /* only reached if no exceptions are thrown */
 			                break;
-			            /* note could just catch all exceptions since the retry message is the same, but that is bad practice */
-		            	} catch (NumberFormatException e) {
-		            		/* instruct user on error and to retry */
-		            		System.out.println(e);
-		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
-		            	    input = user.nextLine();
-		            	} catch(IllegalArgumentException e) {
-		            		/* instruct user on error and to retry */
-		            		System.out.println(e);
-		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
-		            	    input = user.nextLine();
-		            	} catch (ArrayIndexOutOfBoundsException e) {
+			            /* note could just catch all exceptions since the retry message is the same, but that is bad practice - against NumberFormatException is caught by IllegalArgumentException*/
+		            	} catch ( IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
 		            		/* instruct user on error and to retry */
 		            		System.out.println(e);
 		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
