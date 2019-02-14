@@ -13,7 +13,7 @@ import java.util.Collections;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.400
+ * @version 2.404
  * @since 12 February 2019.
  */
 
@@ -221,6 +221,81 @@ public class CircuitAnalysis {
 		}
 	}
 	
+	/** Method to make same node analysis more efficient with better time complexity, using ArrayLists to sort components based on their node connections
+	 * 
+	 */
+	public void analyzeParallelSameNodeUnderConstruction() {
+		ArrayList<Component> toConnect = new ArrayList<Component>();
+		ArrayList<Component> toRemove = new ArrayList<Component>();
+		/* this ArrayList will store components of the same first node that also have the same second node */
+		ArrayList<ArrayList<Component>> temporary = new ArrayList<ArrayList<Component>>();
+		/* this ArrayList will store an ArrayList of components that have the same first node */
+		ArrayList<ArrayList<Component>> nodePairs= new ArrayList<ArrayList<Component>>();
+		/* instantiate each ArrayList - maximum size will be size of components list i.e. only serial components - chose to do this rather than dynamically create
+		 * ArrayLists as with large number of components, this would result in a lot more checking to see if ArrayList is instantiated yet*/
+		for(int i = 0; i<1000;i++) {
+			nodePairs.add(new ArrayList<Component>());
+			temporary.add(new ArrayList<Component>());
+		}
+		/* sort the components into this ArrayList based on their first node Id */
+		for(Component component:components) {
+			int indice1 = component.getNode1().getId();
+			nodePairs.get(indice1).add(component);
+		}
+		/* now iterate through those ArrayLists to see if any are bigger than 2, since voltages cannot be parallel they must have resistors if they have multiple components */
+		for(int i = 0; i<nodePairs.size();i++) {
+			/* if there are parallel resistors */
+			if (nodePairs.get(i).size()>1) {
+				/* find components with the same second node */
+				for(Component component:nodePairs.get(i)) {
+					System.out.println(temporary);
+					/* sort them into the temporary list */
+					temporary.get(i).add(component.getNode2().getId(),component);
+				}
+				/* now for all sorted resistors */
+				for(int j = 0; j<temporary.size();j++) {
+					/* if there is more than one between the same two nodes */
+					if(temporary.get(j).size()>1) {
+						/* create equivalent parallel resistor */
+						Resistor equivalent = new Resistor(parallelResistors(temporary.get(j)),findNode(temporary.get(j).get(0).getNode1().getId()),findNode(temporary.get(j).get(0).getNode2().getId()));
+						/* for rewinding resistor id */
+						countResistors++;
+						/* queue it for connection */
+						toConnect.add(equivalent);
+						/* queue resistors that need to be removed */
+						toRemove.addAll(temporary.get(j));
+					}
+				}
+				temporary.clear();
+			}
+		}
+		/* remove resistors to be replaced by single equivalent resistor */
+		/* if there are items to be removed */
+		if(toRemove.size()>0) {
+			/* for each component to be removed */
+			for (Component remove:toRemove) {
+				/* for each component */
+				for(int i = 0; i <components.size();i++) {
+					/* if the component is a resistor and it is in the list of resistors to be removed */
+					if(components.get(i).getId()==remove.getId()&&components.get(i) instanceof Resistor) {
+						/* remove it from components */
+						remove.getNode1().disconnect(remove);
+						remove.getNode2().disconnect(remove);
+						components.remove(i);
+						/* need to consider that components has shrunk by 1 */
+						i--;
+					}
+				}
+			}
+		}
+		/* attach equivalent resistors */
+		for(Component comp:toConnect) {
+			components.add(comp);
+			comp.getNode1().connect(comp);
+			comp.getNode2().connect(comp);
+		}
+	}
+	
 	/** Method that reduces any two serially connected resistors individually */
 	protected void analyzeSeriesIndividually() {
 		ArrayList<Component> toAdd = new ArrayList<>();
@@ -282,7 +357,7 @@ public class CircuitAnalysis {
 		}
 	}
 	
-	/** find resistance between two specific nodes 
+	/** find resistance between two specific nodes - under construction
 	 * @param Node node1
 	 * @param Node node2
 	 * @return double resistance */

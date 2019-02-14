@@ -16,7 +16,7 @@ import java.util.Scanner;
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
  * @author Michael Sinclair.
- * @version 2.403
+ * @version 2.404
  * @since 13 February 2019.
  */
 
@@ -132,64 +132,7 @@ public class UserMain {
     
     }
 	
-	/** Add a voltage to the circuit
-	 * @param String input
-	 * @param ArrayList<Node> nodeList
-	 * @param Scanner user
-	 * @param Circuit cir
-	 */
-	public static void addVoltage(String input, ArrayList<Node> nodeList, Scanner user, Circuit cir) {
-		int firstNode=0;
-		int secondNode=0;
-		double vVal=0.0;
-		
-	    /* Split input into various fields with input validation */
-		while(true) {
-	    	try {
-	            String[] inputSplit = input.split(" ");
-				/* if not the proper number of data entities */
-	            if(inputSplit.length!=4) {
-	            	/* throw exception to keep user within loop */
-	            	throw new IllegalArgumentException("Input must be R X Y Z.");
-	            }
-	            /* store the data */
-	            String testLetter = inputSplit[0];
-	            firstNode = Integer.parseInt(inputSplit[1]);
-	            secondNode = Integer.parseInt(inputSplit[2]);
-	            vVal = Double.parseDouble(inputSplit[3]);
-	            /* if not a voltage entered */
-	            if (!testLetter.equals("v") && !testLetter.equals("V")) {
-	                /* throw exception to keep user within loop */
-	            	throw new IllegalArgumentException("You must enter a voltage.");
-	            }
-	            /* component must be connected to two different nodes */
-	            if(firstNode == secondNode) {
-	            	throw new IllegalArgumentException("Components must be connected to two different nodes.");
-	            }
-	            /* only reached if no exceptions are thrown */
-	            break;
-	        /* note could just catch all exceptions since the retry message is the same, but that is bad practice - against NumberFormatException is caught by IllegalArgumentException*/
-	    	} catch ( IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
-	    		/* instruct user on error and to retry */
-	    		System.out.println(e);
-	    		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a voltage source:");
-	    	    input = user.nextLine();
-	    	}
-		}
-	    
-	    /* create nodes if they do not already exist*/
-		Node node1 = findOrCreate(firstNode, nodeList);
-		Node node2 = findOrCreate(secondNode, nodeList);
-	
-		/*Create and add resistor to circuit.*/
-		Voltage voltage = new Voltage(vVal, node1, node2);
-	    cir.addComponent(voltage);
-		/* track node connections */
-		node1.connect(voltage);
-		node2.connect(voltage);
-	    
-	    System.out.println("Voltage added: "+voltage.toString());
-	}
+
 	
 	/* Methods */
 	
@@ -215,7 +158,7 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.403 Notes:");
+        System.out.println("V2.404 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors.");
@@ -287,6 +230,65 @@ public class UserMain {
         System.out.println("Added Resistor: "+resistor.toString());
         
     }
+	
+	/** Add a voltage to the circuit
+	 * @param String input
+	 * @param ArrayList<Node> nodeList
+	 * @param Scanner user
+	 * @param Circuit cir
+	 */
+	public static void addVoltage(String input, ArrayList<Node> nodeList, Scanner user, Circuit cir) {
+		int firstNode=0;
+		int secondNode=0;
+		double vVal=0.0;
+		
+	    /* Split input into various fields with input validation */
+		while(true) {
+	    	try {
+	            String[] inputSplit = input.split(" ");
+				/* if not the proper number of data entities */
+	            if(inputSplit.length!=4) {
+	            	/* throw exception to keep user within loop */
+	            	throw new IllegalArgumentException("Input must be R X Y Z.");
+	            }
+	            /* store the data */
+	            String testLetter = inputSplit[0];
+	            firstNode = Integer.parseInt(inputSplit[1]);
+	            secondNode = Integer.parseInt(inputSplit[2]);
+	            vVal = Double.parseDouble(inputSplit[3]);
+	            /* if not a voltage entered */
+	            if (!testLetter.equals("v") && !testLetter.equals("V")) {
+	                /* throw exception to keep user within loop */
+	            	throw new IllegalArgumentException("You must enter a voltage.");
+	            }
+	            /* component must be connected to two different nodes */
+	            if(firstNode == secondNode) {
+	            	throw new IllegalArgumentException("Components must be connected to two different nodes.");
+	            }
+	            /* only reached if no exceptions are thrown */
+	            break;
+	        /* note could just catch all exceptions since the retry message is the same, but that is bad practice - against NumberFormatException is caught by IllegalArgumentException*/
+	    	} catch ( IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
+	    		/* instruct user on error and to retry */
+	    		System.out.println(e);
+	    		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a voltage source:");
+	    	    input = user.nextLine();
+	    	}
+		}
+	    
+	    /* create nodes if they do not already exist*/
+		Node node1 = findOrCreate(firstNode, nodeList);
+		Node node2 = findOrCreate(secondNode, nodeList);
+	
+		/*Create and add resistor to circuit.*/
+		Voltage voltage = new Voltage(vVal, node1, node2);
+	    cir.addComponent(voltage);
+		/* track node connections */
+		node1.connect(voltage);
+		node2.connect(voltage);
+	    
+	    System.out.println("Voltage added: "+voltage.toString());
+	}
 	
 	/** Method to perform calculation operation
 	 * @param String input
