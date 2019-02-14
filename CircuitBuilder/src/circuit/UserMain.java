@@ -16,7 +16,7 @@ import java.util.Scanner;
  * Plan to add functionality to process Y-Delta transformations for resistors that can't be serial or parallel calculated.
  * 
  * @author Michael Sinclair.
- * @version 2.401
+ * @version 2.402
  * @since 13 February 2019.
  */
 
@@ -56,7 +56,7 @@ public class UserMain {
         System.out.println("Calculation function will assume that nodes are ordered and sequential from 0 to N-1 where N is the total number of nodes.");
         System.out.println("Voltage sources cannot be placed in parallel with eachother.");
         System.out.println("");
-        System.out.println("V2.401 Notes:");
+        System.out.println("V2.402 Notes:");
         System.out.println("Resistors must be connected serially or in parallel. This program does not currently support connections that are neither.");
         System.out.println("Currently the program only supports purely directly serial voltage sources, one of which must be between nodes 0 and 1.");
         System.out.println("Voltages may not be connected in parallel with resistors.");
@@ -143,11 +143,9 @@ public class UserMain {
 			                secondNode = Integer.parseInt(inputSplit[2]);
 			                rVal = Double.parseDouble(inputSplit[3]);
 			                /* if not a resistor entered */
-			                if (!testLetter.equals("r")) {
-			                	if(!testLetter.equals("R")) {
-				                	/* throw exception to keep user within loop */
-			                		throw new IllegalArgumentException("You must enter a resistor.");
-			                	}
+			                if ( !testLetter.equals("r") && !testLetter.equals("R") ) {
+				                /* throw exception to keep user within loop */
+			                	throw new IllegalArgumentException("You must enter a resistor.");
 			                }
 			                /* no negative resistances - testing against a double so do not test against exactly 0 due to imprecision in floating point numbers */
 			                if(rVal < 0.00001){
@@ -204,11 +202,9 @@ public class UserMain {
 			                secondNode = Integer.parseInt(inputSplit[2]);
 			                vVal = Double.parseDouble(inputSplit[3]);
 			                /* if not a voltage entered */
-			                if (!testLetter.equals("v")) {
-			                	if(!testLetter.equals("V")) {
-				                	/* throw exception to keep user within loop */
-			                		throw new IllegalArgumentException("You must enter a voltage.");
-			                	}
+			                if (!testLetter.equals("v") && !testLetter.equals("V")) {
+				                /* throw exception to keep user within loop */
+			                	throw new IllegalArgumentException("You must enter a voltage.");
 			                }
 			                /* component must be connected to two different nodes */
 			                if(firstNode == secondNode) {
@@ -220,7 +216,7 @@ public class UserMain {
 		            	} catch ( IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
 		            		/* instruct user on error and to retry */
 		            		System.out.println(e);
-		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a resistor:");
+		            		System.out.println("Invalid input. Voltage syntax is V X Y Z. Input a voltage source:");
 		            	    input = user.nextLine();
 		            	}
 	            	}
@@ -274,14 +270,8 @@ public class UserMain {
 	            		/* if not an integer, this will throw a NumberFormatException */
 	            		Integer.parseInt(number);
 	            		/* if a voltage or resistor are not selected */
-	            		if(letter!='r') {
-	            			if(letter!='R') {
-	            				if(letter!='v') {
-	            					if(letter!='V') {
-	            						throw new IllegalArgumentException("Select a resistor with 'R' or a voltage with 'V'.");
-	            					}
-	            				}
-	            			}
+	            		if(letter!='r' && letter!='R' && letter!='v' && letter!='V') {
+	            			throw new IllegalArgumentException("Select a resistor with 'R' or a voltage with 'V'.");
 	            		}
 	            		/* if the number string does not contain at least one character */
 	            		if(number.length()<1) {
