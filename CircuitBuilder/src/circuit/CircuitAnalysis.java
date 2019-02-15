@@ -13,8 +13,8 @@ import java.util.Collections;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.404
- * @since 12 February 2019.
+ * @version 2.410
+ * @since 15 February 2019.
  */
 
 public class CircuitAnalysis {
@@ -153,8 +153,8 @@ public class CircuitAnalysis {
 	
 	
 	
-	/** Reduces same-node parallel resistors to a single equivalent resistor */
-	protected void analyzeParallelSameNode() {
+	/** Reduces same-node parallel resistors to a single equivalent resistor - old method no longer in use - leaving in code for now */
+	protected void analyzeParallelSameNodeOLDMETHOD() {
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> toRemove = new ArrayList<>();
 		ArrayList<Component> toConnect = new ArrayList<>();
@@ -222,51 +222,50 @@ public class CircuitAnalysis {
 	}
 	
 	/** Method to make same node analysis more efficient with better time complexity, using ArrayLists to sort components based on their node connections
-	 * 
+	 * TODO IS THIS MORE EFFICIENT THAN THE ABOVE METHOD?! It works now, check up on it later when more time
 	 */
-	public void analyzeParallelSameNodeUnderConstruction() {
+	public void analyzeParallelSameNode() {
 		ArrayList<Component> toConnect = new ArrayList<Component>();
 		ArrayList<Component> toRemove = new ArrayList<Component>();
 		/* this ArrayList will store components of the same first node that also have the same second node */
-		ArrayList<ArrayList<Component>> temporary = new ArrayList<ArrayList<Component>>();
+		ArrayList<ArrayList<Component>> sameSecondNode = new ArrayList<ArrayList<Component>>();
 		/* this ArrayList will store an ArrayList of components that have the same first node */
-		ArrayList<ArrayList<Component>> nodePairs= new ArrayList<ArrayList<Component>>();
+		ArrayList<ArrayList<Component>> sameFirstNode= new ArrayList<ArrayList<Component>>();
 		/* instantiate each ArrayList - maximum size will be size of components list i.e. only serial components - chose to do this rather than dynamically create
 		 * ArrayLists as with large number of components, this would result in a lot more checking to see if ArrayList is instantiated yet*/
-		for(int i = 0; i<1000;i++) {
-			nodePairs.add(new ArrayList<Component>());
-			temporary.add(new ArrayList<Component>());
+		for(int i = 0; i<nodeList.size()*nodeList.size();i++) {
+			sameFirstNode.add(new ArrayList<Component>());
+			sameSecondNode.add(new ArrayList<Component>());
 		}
 		/* sort the components into this ArrayList based on their first node Id */
 		for(Component component:components) {
 			int indice1 = component.getNode1().getId();
-			nodePairs.get(indice1).add(component);
+			sameFirstNode.get(indice1).add(component);
 		}
 		/* now iterate through those ArrayLists to see if any are bigger than 2, since voltages cannot be parallel they must have resistors if they have multiple components */
-		for(int i = 0; i<nodePairs.size();i++) {
+		for(int i = 0; i<sameFirstNode.size();i++) {
 			/* if there are parallel resistors */
-			if (nodePairs.get(i).size()>1) {
+			if (sameFirstNode.get(i).size()>1) {
 				/* find components with the same second node */
-				for(Component component:nodePairs.get(i)) {
-					System.out.println(temporary);
-					/* sort them into the temporary list */
-					temporary.get(i).add(component.getNode2().getId(),component);
+				for(Component component:sameFirstNode.get(i)) {
+					/* sort them into the sameSecondNode list */
+					sameSecondNode.get(component.getNode2().getId()).add(component);
 				}
 				/* now for all sorted resistors */
-				for(int j = 0; j<temporary.size();j++) {
+				for(int j = 0; j<sameSecondNode.size();j++) {
 					/* if there is more than one between the same two nodes */
-					if(temporary.get(j).size()>1) {
+					if(sameSecondNode.get(j).size()>1) {
 						/* create equivalent parallel resistor */
-						Resistor equivalent = new Resistor(parallelResistors(temporary.get(j)),findNode(temporary.get(j).get(0).getNode1().getId()),findNode(temporary.get(j).get(0).getNode2().getId()));
+						Resistor equivalent = new Resistor(parallelResistors(sameSecondNode.get(j)),findNode(sameSecondNode.get(j).get(0).getNode1().getId()),findNode(sameSecondNode.get(j).get(0).getNode2().getId()));
 						/* for rewinding resistor id */
 						countResistors++;
 						/* queue it for connection */
 						toConnect.add(equivalent);
 						/* queue resistors that need to be removed */
-						toRemove.addAll(temporary.get(j));
+						toRemove.addAll(sameSecondNode.get(j));
 					}
 				}
-				temporary.clear();
+				sameSecondNode.clear();
 			}
 		}
 		/* remove resistors to be replaced by single equivalent resistor */
