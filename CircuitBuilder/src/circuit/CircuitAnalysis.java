@@ -13,8 +13,8 @@ import java.util.Collections;
  * 
  * 
  * @author Michael Sinclair.
- * @version 2.410
- * @since 15 February 2019.
+ * @version 2.411
+ * @since 16 February 2019.
  */
 
 public class CircuitAnalysis {
@@ -154,7 +154,7 @@ public class CircuitAnalysis {
 	
 	
 	/** Reduces same-node parallel resistors to a single equivalent resistor - old method no longer in use - leaving in code for now */
-	protected void analyzeParallelSameNodeOLDMETHOD() {
+	protected void analyzeParallelSameNodeOLDMETHODNOLONGERINUSE() {
 		ArrayList<Component> temp = new ArrayList<>();
 		ArrayList<Component> toRemove = new ArrayList<>();
 		ArrayList<Component> toConnect = new ArrayList<>();
@@ -231,9 +231,11 @@ public class CircuitAnalysis {
 		ArrayList<ArrayList<Component>> sameSecondNode = new ArrayList<ArrayList<Component>>();
 		/* this ArrayList will store an ArrayList of components that have the same first node */
 		ArrayList<ArrayList<Component>> sameFirstNode= new ArrayList<ArrayList<Component>>();
-		/* instantiate each ArrayList - maximum size will be size of components list i.e. only serial components - chose to do this rather than dynamically create
-		 * ArrayLists as with large number of components, this would result in a lot more checking to see if ArrayList is instantiated yet*/
-		for(int i = 0; i<nodeList.size()*nodeList.size();i++) {
+		/* instantiate each ArrayList - maximum size will be size of components list i.e. only serial components 
+		 * (which would actually only have n-1 size really because the 'last node' points back to the 0th node so its first node is 0, same as 'first node' of 0 to 1 
+		 * chose to do this rather than dynamically create ArrayLists as with large number of components, 
+		 * as this would result in a lot more checking to see if each sub-ArrayList is instantiated yet*/
+		for(int i = 0; i<nodeList.size();i++) {
 			sameFirstNode.add(new ArrayList<Component>());
 			sameSecondNode.add(new ArrayList<Component>());
 		}
